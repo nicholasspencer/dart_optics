@@ -12,9 +12,9 @@ typedef CompoundLensFactory<Focus, Refocus> = Lens<Focus?, Refocus?>? Function(
 );
 
 mixin Lensing<Source, Focus> {
-  Accessor<Source?, Focus?>? get accessor;
+  Accessor<Source?, Focus?>? get getter;
 
-  Mutator<Source?, Focus?>? get mutator;
+  Mutator<Source?, Focus?>? get setter;
 
   Lens<Source?, Refocus?> compoundWithLens<Refocus>(
     Lens<Focus?, Refocus?>? lens,
@@ -28,8 +28,8 @@ mixin Lensing<Source, Focus> {
 @immutable
 class Lens<Source, Focus> with Lensing<Source?, Focus?> {
   const Lens({
-    required this.accessor,
-    required this.mutator,
+    required this.getter,
+    required this.setter,
   });
 
   static Lens<Source?, Focus?> compound<Source, Through, Focus>({
@@ -37,16 +37,16 @@ class Lens<Source, Focus> with Lensing<Source?, Focus?> {
     required Lens<Through?, Focus?>? throughLens,
   }) =>
       Lens<Source?, Focus?>(
-        accessor: (source) {
-          return throughLens?.accessor?.call(
-            sourceLens?.accessor?.call(source),
+        getter: (source) {
+          return throughLens?.getter?.call(
+            sourceLens?.getter?.call(source),
           );
         },
-        mutator: (source, value) {
-          return sourceLens?.mutator?.call(
+        setter: (source, value) {
+          return sourceLens?.setter?.call(
             source,
-            throughLens?.mutator?.call(
-              sourceLens.accessor?.call(source),
+            throughLens?.setter?.call(
+              sourceLens.getter?.call(source),
               value,
             ),
           );
@@ -54,14 +54,14 @@ class Lens<Source, Focus> with Lensing<Source?, Focus?> {
       );
 
   @override
-  final Accessor<Source?, Focus?>? accessor;
+  final Accessor<Source?, Focus?>? getter;
 
   @override
-  final Mutator<Source?, Focus?>? mutator;
+  final Mutator<Source?, Focus?>? setter;
 
-  Focus? view(Source? source) => accessor?.call(source);
+  Focus? get(Source? source) => getter?.call(source);
 
-  Source? mutate(Source? source, Focus? value) => mutator?.call(source, value);
+  Source? set(Source? source, Focus? value) => setter?.call(source, value);
 
   @override
   Lens<Source?, Refocus?> compoundWithLens<Refocus>(
@@ -79,11 +79,11 @@ class Lens<Source, Focus> with Lensing<Source?, Focus?> {
   ) {
     return compoundWithLens<Refocus>(
       Lens<Focus?, Refocus?>(
-        accessor: (focus) {
-          return factory?.call(focus)?.accessor?.call(focus);
+        getter: (focus) {
+          return factory?.call(focus)?.getter?.call(focus);
         },
-        mutator: (focus, value) {
-          return factory?.call(focus)?.mutator?.call(focus, value);
+        setter: (focus, value) {
+          return factory?.call(focus)?.setter?.call(focus, value);
         },
       ),
     );
@@ -101,15 +101,15 @@ class BoundLens<Source, Focus> with Lensing<Source?, Focus?> {
 
   final Lens<Source?, Focus?> lens;
 
-  Focus? call() => accessor?.call(source);
+  Focus? call() => getter?.call(source);
 
-  Source? mutate(Focus? newValue) => mutator?.call(source, newValue);
-
-  @override
-  Accessor<Source?, Focus?>? get accessor => lens.accessor;
+  Source? set(Focus? newValue) => setter?.call(source, newValue);
 
   @override
-  Mutator<Source?, Focus?>? get mutator => lens.mutator;
+  Accessor<Source?, Focus?>? get getter => lens.getter;
+
+  @override
+  Mutator<Source?, Focus?>? get setter => lens.setter;
 
   @override
   Lens<Source?, Refocus?> compoundWithLens<Refocus>(

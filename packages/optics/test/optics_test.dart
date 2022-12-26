@@ -14,18 +14,18 @@ void main() {
     );
   });
   group('Lens', () {
-    test('accessor', () {
+    test('getter', () {
       expect(
-        personAddressLens.accessor?.call(subject),
+        personAddressLens.getter?.call(subject),
         equals(Address(streetName: '123 Capital of Texas Hwy')),
       );
 
       expect(
-        personJobLens.accessor?.call(subject),
+        personJobLens.getter?.call(subject),
         isNull,
       );
 
-      subject = personJobLens.mutator?.call(
+      subject = personJobLens.setter?.call(
         subject,
         Job(
           address: Address(
@@ -35,7 +35,7 @@ void main() {
       );
 
       expect(
-        personJobLens.accessor?.call(subject),
+        personJobLens.getter?.call(subject),
         equals(
           Job(
             address: Address(
@@ -46,23 +46,23 @@ void main() {
       );
 
       expect(
-        personJobAddressNameLens.accessor?.call(subject),
+        personJobAddressNameLens.getter?.call(subject),
         '456 Mesa Dr',
       );
     });
 
     test('view', () {
       expect(
-        personAddressLens.view(subject),
+        personAddressLens.get(subject),
         equals(Address(streetName: '123 Capital of Texas Hwy')),
       );
 
       expect(
-        personJobLens.view(subject),
+        personJobLens.get(subject),
         isNull,
       );
 
-      subject = personJobLens.mutate(
+      subject = personJobLens.set(
         subject,
         Job(
           address: Address(
@@ -72,7 +72,7 @@ void main() {
       );
 
       expect(
-        personJobLens.view(subject),
+        personJobLens.get(subject),
         equals(
           Job(
             address: Address(
@@ -83,13 +83,13 @@ void main() {
       );
 
       expect(
-        personJobAddressNameLens.view(subject),
+        personJobAddressNameLens.get(subject),
         '456 Mesa Dr',
       );
     });
 
-    test('mutator', () {
-      subject = personAddressLens.mutator?.call(
+    test('setter', () {
+      subject = personAddressLens.setter?.call(
         subject,
         Address(streetName: '789 Mopac Expy'),
       );
@@ -99,7 +99,7 @@ void main() {
         equals(Address(streetName: '789 Mopac Expy')),
       );
 
-      subject = personJobLens.mutator?.call(
+      subject = personJobLens.setter?.call(
         subject,
         Job(
           address: Address(streetName: '123 Capital of Texas Hwy'),
@@ -117,19 +117,19 @@ void main() {
         ),
       );
 
-      subject = personJobAddressNameLens.mutator?.call(
+      subject = personJobAddressNameLens.setter?.call(
         subject,
         '124 Research Blvd',
       );
 
       expect(
-        personJobAddressNameLens.accessor?.call(subject),
+        personJobAddressNameLens.getter?.call(subject),
         '124 Research Blvd',
       );
     });
 
     test('mutate', () {
-      subject = personAddressLens.mutate(
+      subject = personAddressLens.set(
         subject,
         Address(streetName: '789 Mopac Expy'),
       );
@@ -139,7 +139,7 @@ void main() {
         equals(Address(streetName: '789 Mopac Expy')),
       );
 
-      subject = personJobLens.mutate(
+      subject = personJobLens.set(
         subject,
         Job(
           address: Address(streetName: '123 Capital of Texas Hwy'),
@@ -157,7 +157,7 @@ void main() {
         ),
       );
 
-      subject = personJobAddressNameLens.mutate(
+      subject = personJobAddressNameLens.set(
         subject,
         '124 Research Blvd',
       );
@@ -174,7 +174,7 @@ void main() {
       expect(subject?.jobTitle(), isNull);
     });
     test('mutate', () {
-      subject = subject?.streetName.mutate('789 Mopac Expy');
+      subject = subject?.streetName.set('789 Mopac Expy');
       expect(subject?.address.streetName, equals('789 Mopac Expy'));
 
       subject = subject?.copyWith(
@@ -183,42 +183,42 @@ void main() {
         ),
       );
 
-      subject = subject?.jobTitle.mutate('Software Engineer');
+      subject = subject?.jobTitle.set('Software Engineer');
       expect(subject?.job?.title, 'Software Engineer');
     });
   });
 }
 
 final Lens<Job?, String?> jobTitleLens = Lens(
-  accessor: (subject) {
+  getter: (subject) {
     return subject?.title;
   },
-  mutator: (subject, value) {
+  setter: (subject, value) {
     return subject?.copyWith(title: value);
   },
 );
 
 final Lens<Job?, Address?> jobAddressLens = Lens(
-  accessor: (subject) {
+  getter: (subject) {
     return subject?.address;
   },
-  mutator: (subject, value) {
+  setter: (subject, value) {
     return subject?.copyWith(address: value);
   },
 );
 
 final Lens<Address?, String?> addressStreetNameLens = Lens(
-  accessor: (subject) {
+  getter: (subject) {
     return subject?.streetName;
   },
-  mutator: (subject, value) {
+  setter: (subject, value) {
     return subject?.copyWith(streetName: value);
   },
 );
 
 final Lens<Person?, Address?> personAddressLens = Lens(
-  accessor: (subject) => subject?.address,
-  mutator: (subject, value) => subject?.copyWith(address: value),
+  getter: (subject) => subject?.address,
+  setter: (subject, value) => subject?.copyWith(address: value),
 );
 
 final Lens<Person?, String?> personAddressNameLens =
@@ -227,8 +227,8 @@ final Lens<Person?, String?> personAddressNameLens =
 });
 
 final Lens<Person?, Job?> personJobLens = Lens(
-  accessor: (subject) => subject?.job,
-  mutator: (subject, value) => subject?.copyWith(job: value),
+  getter: (subject) => subject?.job,
+  setter: (subject, value) => subject?.copyWith(job: value),
 );
 
 final Lens<Person?, String?> personJobTitleLens =
