@@ -13,6 +13,7 @@ void main() {
       ),
     );
   });
+
   group('Lens', () {
     test('getter', () {
       expect(
@@ -167,12 +168,26 @@ void main() {
         equals('124 Research Blvd'),
       );
     });
+
+    test('map', () {
+      expect(
+        personAddressNameLens
+            .map(
+              source: subject,
+              map: (focus) => focus?.toUpperCase(),
+            )
+            ?.address
+            .streetName,
+        equals('123 CAPITAL OF TEXAS HWY'),
+      );
+    });
   });
   group('BoundLens', () {
     test('call', () {
       expect(subject?.streetName(), equals('123 Capital of Texas Hwy'));
       expect(subject?.jobTitle(), isNull);
     });
+
     test('mutate', () {
       subject = subject?.streetName.set('789 Mopac Expy');
       expect(subject?.address.streetName, equals('789 Mopac Expy'));
@@ -185,6 +200,18 @@ void main() {
 
       subject = subject?.jobTitle.set('Software Engineer');
       expect(subject?.job?.title, 'Software Engineer');
+    });
+
+    test('map', () {
+      expect(
+        subject?.streetName
+            .map(
+              map: (focus) => focus?.toUpperCase(),
+            )
+            ?.address
+            .streetName,
+        equals('123 CAPITAL OF TEXAS HWY'),
+      );
     });
   });
 }

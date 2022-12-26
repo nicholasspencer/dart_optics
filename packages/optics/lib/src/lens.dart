@@ -1,39 +1,17 @@
 import 'package:meta/meta.dart';
 
-typedef Accessor<Source, Focus> = Focus? Function(Source? source);
-
-typedef Mutator<Source, Focus> = Source? Function(
-  Source? source,
-  Focus? value,
-);
-
-typedef CompoundLensFactory<Focus, Refocus> = Lensing<Focus?, Refocus?>?
-    Function(Focus? focus);
-
-mixin Lensing<Source, Focus> {
-  Accessor<Source?, Focus?>? get getter;
-
-  Mutator<Source?, Focus?>? get setter;
-
-  Lensing<Source?, Refocus?> compoundWithLens<Refocus>(
-    Lensing<Focus?, Refocus?>? lens,
-  );
-
-  Lensing<Source?, Refocus?> compoundWithFocusFactory<Refocus>(
-    CompoundLensFactory<Focus?, Refocus>? factory,
-  );
-}
+import 'optic.dart';
 
 @immutable
-class Lens<Source, Focus> with Lensing<Source?, Focus?> {
+class Lens<Source, Focus> with Optic<Source?, Focus?> {
   const Lens({
     required this.getter,
     required this.setter,
   });
 
   static Lens<Source?, Focus?> compound<Source, Through, Focus>({
-    required Lensing<Source?, Through?>? sourceLens,
-    required Lensing<Through?, Focus?>? throughLens,
+    required Optic<Source?, Through?>? sourceLens,
+    required Optic<Through?, Focus?>? throughLens,
   }) =>
       Lens<Source?, Focus?>(
         getter: (source) {
@@ -62,9 +40,13 @@ class Lens<Source, Focus> with Lensing<Source?, Focus?> {
 
   Source? set(Source? source, Focus? value) => setter?.call(source, value);
 
+  Source? map({required Focus? Function(Focus? focus) map, Source? source}) {
+    return set(source, map(get(source)));
+  }
+
   @override
-  Lens<Source?, Refocus?> compoundWithLens<Refocus>(
-    Lensing<Focus?, Refocus?>? lens,
+  Lens<Source?, Refocus?> compoundWithOptic<Refocus>(
+    Optic<Focus?, Refocus?>? lens,
   ) {
     return Lens.compound<Source?, Focus?, Refocus?>(
       sourceLens: this,
@@ -74,9 +56,9 @@ class Lens<Source, Focus> with Lensing<Source?, Focus?> {
 
   @override
   Lens<Source?, Refocus?> compoundWithFocusFactory<Refocus>(
-    CompoundLensFactory<Focus?, Refocus>? factory,
+    CompoundOpticFactory<Focus?, Refocus>? factory,
   ) {
-    return compoundWithLens<Refocus>(
+    return compoundWithOptic<Refocus>(
       Lens<Focus?, Refocus?>(
         getter: (focus) {
           return factory?.call(focus)?.getter?.call(focus);
@@ -90,7 +72,7 @@ class Lens<Source, Focus> with Lensing<Source?, Focus?> {
 }
 
 @immutable
-class BoundLens<Source, Focus> with Lensing<Source?, Focus?> {
+class BoundLens<Source, Focus> with Optic<Source?, Focus?> {
   const BoundLens({
     required this.source,
     required this.lens,
@@ -110,19 +92,21 @@ class BoundLens<Source, Focus> with Lensing<Source?, Focus?> {
   @override
   Mutator<Source?, Focus?>? get setter => lens.setter;
 
+  Source? map({required Focus? Function(Focus? focus) map}) => set(map(this()));
+
   @override
-  BoundLens<Source?, Refocus?> compoundWithLens<Refocus>(
-    Lensing<Focus?, Refocus?>? lens,
+  BoundLens<Source?, Refocus?> compoundWithOptic<Refocus>(
+    Optic<Focus?, Refocus?>? lens,
   ) {
     return BoundLens(
       source: source,
-      lens: this.lens.compoundWithLens(lens),
+      lens: this.lens.compoundWithOptic(lens),
     );
   }
 
   @override
   BoundLens<Source?, Refocus?> compoundWithFocusFactory<Refocus>(
-    CompoundLensFactory<Focus?, Refocus>? factory,
+    CompoundOpticFactory<Focus?, Refocus>? factory,
   ) {
     return BoundLens(
       source: source,
