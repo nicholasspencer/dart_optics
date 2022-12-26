@@ -11,16 +11,26 @@ typedef CompoundLensFactory<Focus, Refocus> = Lens<Focus?, Refocus?>? Function(
   Focus? focus,
 );
 
+mixin Lensing<Source, Focus> {
+  Accessor<Source?, Focus?>? get accessor;
+
+  Mutator<Source?, Focus?>? get mutator;
+
+  Lens<Source?, Refocus?> compoundWithLens<Refocus>(
+    Lens<Focus?, Refocus?>? lens,
+  );
+
+  Lens<Source?, Refocus?> compoundWithFocusFactory<Refocus>(
+    CompoundLensFactory<Focus?, Refocus>? factory,
+  );
+}
+
 @immutable
-class Lens<Source, Focus> {
+class Lens<Source, Focus> with Lensing<Source?, Focus?> {
   const Lens({
     required this.accessor,
     required this.mutator,
   });
-
-  final Accessor<Source?, Focus?>? accessor;
-
-  final Mutator<Source?, Focus?>? mutator;
 
   static Lens<Source?, Focus?> compound<Source, Through, Focus>({
     required Lens<Source?, Through?>? sourceLens,
@@ -43,6 +53,17 @@ class Lens<Source, Focus> {
         },
       );
 
+  @override
+  final Accessor<Source?, Focus?>? accessor;
+
+  @override
+  final Mutator<Source?, Focus?>? mutator;
+
+  Focus? view(Source? source) => accessor?.call(source);
+
+  Source? mutate(Source? source, Focus? value) => mutator?.call(source, value);
+
+  @override
   Lens<Source?, Refocus?> compoundWithLens<Refocus>(
     Lens<Focus?, Refocus?>? lens,
   ) {
@@ -52,6 +73,7 @@ class Lens<Source, Focus> {
     );
   }
 
+  @override
   Lens<Source?, Refocus?> compoundWithFocusFactory<Refocus>(
     CompoundLensFactory<Focus?, Refocus>? factory,
   ) {
@@ -65,5 +87,41 @@ class Lens<Source, Focus> {
         },
       ),
     );
+  }
+}
+
+@immutable
+class BoundLens<Source, Focus> with Lensing<Source?, Focus?> {
+  const BoundLens({
+    required this.source,
+    required this.lens,
+  });
+
+  final Source source;
+
+  final Lens<Source?, Focus?> lens;
+
+  Focus? call() => accessor?.call(source);
+
+  Source? mutate(Focus? newValue) => mutator?.call(source, newValue);
+
+  @override
+  Accessor<Source?, Focus?>? get accessor => lens.accessor;
+
+  @override
+  Mutator<Source?, Focus?>? get mutator => lens.mutator;
+
+  @override
+  Lens<Source?, Refocus?> compoundWithLens<Refocus>(
+    Lens<Focus?, Refocus?>? lens,
+  ) {
+    return this.lens.compoundWithLens(lens);
+  }
+
+  @override
+  Lens<Source?, Refocus?> compoundWithFocusFactory<Refocus>(
+    CompoundLensFactory<Focus?, Refocus>? factory,
+  ) {
+    return lens.compoundWithFocusFactory(factory);
   }
 }
