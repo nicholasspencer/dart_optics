@@ -14,18 +14,18 @@ void main() {
     );
   });
   group('Lens', () {
-    test('view', () {
+    test('accessor', () {
       expect(
-        subject?.addressLens.view?.call(subject),
+        subject?.addressLens.accessor?.call(subject),
         equals(Address(streetName: '123 Capital of Texas Hwy')),
       );
 
       expect(
-        subject?.jobLens.view?.call(subject),
+        subject?.jobLens.accessor?.call(subject),
         isNull,
       );
 
-      subject = subject?.jobLens.mutate?.call(
+      subject = subject?.jobLens.mutator?.call(
         subject,
         Job(
           address: Address(
@@ -35,7 +35,7 @@ void main() {
       );
 
       expect(
-        subject?.jobLens.view?.call(subject),
+        subject?.jobLens.accessor?.call(subject),
         Job(
           address: Address(
             streetName: '456 Mesa Dr',
@@ -44,13 +44,13 @@ void main() {
       );
 
       expect(
-        subject?.jobAddressNameLens.view?.call(subject),
+        subject?.jobAddressNameLens.accessor?.call(subject),
         '456 Mesa Dr',
       );
     });
 
-    test('mutate', () {
-      subject = subject?.addressLens.mutate?.call(
+    test('mutator', () {
+      subject = subject?.addressLens.mutator?.call(
         subject,
         Address(streetName: '789 Mopac Expy'),
       );
@@ -60,7 +60,7 @@ void main() {
         equals(Address(streetName: '789 Mopac Expy')),
       );
 
-      subject = subject?.jobLens.mutate?.call(
+      subject = subject?.jobLens.mutator?.call(
         subject,
         Job(
           address: Address(streetName: '123 Capital of Texas Hwy'),
@@ -76,13 +76,13 @@ void main() {
         ),
       );
 
-      subject = subject?.jobAddressNameLens.mutate?.call(
+      subject = subject?.jobAddressNameLens.mutator?.call(
         subject,
         '124 Research Blvd',
       );
 
       expect(
-        subject?.jobAddressNameLens.view?.call(subject),
+        subject?.jobAddressNameLens.accessor?.call(subject),
         '124 Research Blvd',
       );
     });

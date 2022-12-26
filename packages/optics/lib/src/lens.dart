@@ -14,14 +14,13 @@ typedef CompoundLensFactory<Focus, Refocus> = Lens<Focus?, Refocus?>? Function(
 @immutable
 class Lens<Source, Focus> {
   const Lens({
-    required Accessor<Source?, Focus?>? accessor,
-    required Mutator<Source?, Focus?>? mutator,
-  })  : view = accessor,
-        mutate = mutator;
+    required this.accessor,
+    required this.mutator,
+  });
 
-  final Accessor<Source?, Focus?>? view;
+  final Accessor<Source?, Focus?>? accessor;
 
-  final Mutator<Source?, Focus?>? mutate;
+  final Mutator<Source?, Focus?>? mutator;
 
   static Lens<Source?, Focus?> compound<Source, Through, Focus>({
     required Lens<Source?, Through?>? sourceLens,
@@ -29,14 +28,17 @@ class Lens<Source, Focus> {
   }) =>
       Lens<Source?, Focus?>(
         accessor: (source) {
-          return throughLens?.view?.call(
-            sourceLens?.view?.call(source),
+          return throughLens?.accessor?.call(
+            sourceLens?.accessor?.call(source),
           );
         },
         mutator: (source, value) {
-          return sourceLens?.mutate?.call(
+          return sourceLens?.mutator?.call(
             source,
-            throughLens?.mutate?.call(sourceLens.view?.call(source), value),
+            throughLens?.mutator?.call(
+              sourceLens.accessor?.call(source),
+              value,
+            ),
           );
         },
       );
@@ -56,10 +58,10 @@ class Lens<Source, Focus> {
     return compoundWithLens<Refocus>(
       Lens<Focus?, Refocus?>(
         accessor: (focus) {
-          return factory?.call(focus)?.view?.call(focus);
+          return factory?.call(focus)?.accessor?.call(focus);
         },
         mutator: (focus, value) {
-          return factory?.call(focus)?.mutate?.call(focus, value);
+          return factory?.call(focus)?.mutator?.call(focus, value);
         },
       ),
     );
