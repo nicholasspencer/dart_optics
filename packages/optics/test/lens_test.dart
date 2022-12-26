@@ -223,7 +223,7 @@ final Lens<Person, Address> personAddressLens = Lens(
 );
 
 final Lens<Person, String> personAddressNameLens =
-    personAddressLens.compoundWithOptic(addressStreetNameLens);
+    personAddressLens.compoundWithOptical(addressStreetNameLens);
 
 final Lens<Person, Job> personJobLens = Lens(
   getter: (subject) => subject.job,
@@ -231,11 +231,11 @@ final Lens<Person, Job> personJobLens = Lens(
 );
 
 final Lens<Person, String> personJobTitleLens =
-    personJobLens.compoundWithOptic(jobTitleLens);
+    personJobLens.compoundWithOptical(jobTitleLens);
 
 final Lens<Person, String> personJobAddressNameLens = personJobLens
-    .compoundWithOptic<Address>(jobAddressLens)
-    .compoundWithOptic(addressStreetNameLens);
+    .compoundWithOptical<Address>(jobAddressLens)
+    .compoundWithOptical(addressStreetNameLens);
 
 @immutable
 class Person {

@@ -1,18 +1,18 @@
 import 'package:meta/meta.dart';
 
-import 'optic.dart';
+import 'optical.dart';
 import 'prism.dart';
 
 @immutable
-class Lens<Source, Focus> with Optic<Source, Focus> {
+class Lens<Source, Focus> with Optical<Source, Focus> {
   const Lens({
     required this.getter,
     required this.setter,
   });
 
   static Lens<Source, Focus> compound<Source, Through, Focus>({
-    required Optic<Source, Through> sourceLens,
-    required Optic<Through, Focus> throughLens,
+    required Optical<Source, Through> sourceLens,
+    required Optical<Through, Focus> throughLens,
   }) =>
       Lens<Source, Focus>(
         getter: (source) {
@@ -48,8 +48,8 @@ class Lens<Source, Focus> with Optic<Source, Focus> {
     return set(source, map(get(source)));
   }
 
-  Lens<Source, Refocus> compoundWithOptic<Refocus>(
-    Optic<Focus, Refocus> lens,
+  Lens<Source, Refocus> compoundWithOptical<Refocus>(
+    Optical<Focus, Refocus> lens,
   ) {
     return Lens.compound<Source, Focus, Refocus>(
       sourceLens: this,
@@ -60,7 +60,7 @@ class Lens<Source, Focus> with Optic<Source, Focus> {
   Lens<Source, Refocus> compoundWithThroughFactory<Refocus>(
     CompoundOpticFactory<Focus, Refocus> factory,
   ) {
-    return compoundWithOptic<Refocus>(
+    return compoundWithOptical<Refocus>(
       Lens<Focus, Refocus>(
         getter: (focus) {
           return factory(focus).getter(focus);
@@ -81,7 +81,7 @@ class Lens<Source, Focus> with Optic<Source, Focus> {
 }
 
 @immutable
-class BoundLens<Source, Focus> with Optic<Source, Focus> {
+class BoundLens<Source, Focus> with Optical<Source, Focus> {
   const BoundLens({
     required this.source,
     required this.lens,
@@ -103,12 +103,12 @@ class BoundLens<Source, Focus> with Optic<Source, Focus> {
 
   Source map({required Focus Function(Focus focus) map}) => set(map(this()));
 
-  BoundLens<Source, Refocus> compoundWithOptic<Refocus>(
-    Optic<Focus, Refocus> lens,
+  BoundLens<Source, Refocus> compoundWithOptical<Refocus>(
+    Optical<Focus, Refocus> lens,
   ) {
     return BoundLens(
       source: source,
-      lens: this.lens.compoundWithOptic(lens),
+      lens: this.lens.compoundWithOptical(lens),
     );
   }
 

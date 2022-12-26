@@ -1,17 +1,17 @@
 import 'package:meta/meta.dart';
 
-import 'optic.dart';
+import 'optical.dart';
 
 @immutable
-class Prism<Source, Focus> with Optic<Source, Focus?> {
+class Prism<Source, Focus> with Optical<Source, Focus?> {
   const Prism({
     required this.getter,
     required this.setter,
   });
 
   static Prism<Source, Focus?> compound<Source, Through, Focus>({
-    required Optic<Source, Through?> sourcePrism,
-    required Optic<Through, Focus?> throughPrism,
+    required Optical<Source, Through?> sourcePrism,
+    required Optical<Through, Focus?> throughPrism,
   }) =>
       Prism<Source, Focus?>(
         getter: (source) {
@@ -54,11 +54,11 @@ class Prism<Source, Focus> with Optic<Source, Focus?> {
     return set(source, map(get(source)));
   }
 
-  Prism<Source, Refocus?> compoundWithOptic<Through, Refocus>(
-    Optic<Through, Refocus?> prism,
+  Prism<Source, Refocus?> compoundWithOptical<Through, Refocus>(
+    Optical<Through, Refocus?> prism,
   ) {
     return Prism.compound<Source, Through, Refocus?>(
-      sourcePrism: this as Optic<Source, Through?>,
+      sourcePrism: this as Optical<Source, Through?>,
       throughPrism: prism,
     );
   }
@@ -66,7 +66,7 @@ class Prism<Source, Focus> with Optic<Source, Focus?> {
   Prism<Source, Refocus?> compoundWithThroughFactory<Through, Refocus>(
     CompoundOpticFactory<Through, Refocus?> factory,
   ) {
-    return compoundWithOptic<Through, Refocus?>(
+    return compoundWithOptical<Through, Refocus?>(
       Prism<Through, Refocus?>(
         getter: (focus) {
           return factory(focus).getter(focus);
@@ -80,7 +80,7 @@ class Prism<Source, Focus> with Optic<Source, Focus?> {
 }
 
 @immutable
-class BoundPrism<Source, Focus> with Optic<Source, Focus?> {
+class BoundPrism<Source, Focus> with Optical<Source, Focus?> {
   const BoundPrism({
     required this.source,
     required this.prism,
@@ -102,8 +102,8 @@ class BoundPrism<Source, Focus> with Optic<Source, Focus?> {
 
   Source map({required Focus? Function(Focus? focus) map}) => set(map(this()));
 
-  BoundPrism<Source, Refocus?> compoundWithOptic<Refocus>(
-    Optic<Focus, Refocus?> prism,
+  BoundPrism<Source, Refocus?> compoundWithOptical<Refocus>(
+    Optical<Focus, Refocus?> prism,
   ) {
     return BoundPrism(
       source: source,
@@ -114,7 +114,7 @@ class BoundPrism<Source, Focus> with Optic<Source, Focus?> {
   BoundPrism<Source, Refocus?> compoundWithThroughFactory<Refocus>(
     CompoundOpticFactory<Focus, Refocus?> factory,
   ) {
-    return compoundWithOptic(
+    return compoundWithOptical(
       Prism<Focus, Refocus?>(
         getter: (focus) {
           return factory(focus).getter(focus);

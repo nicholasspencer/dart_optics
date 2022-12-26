@@ -223,7 +223,7 @@ final Lens<Person, Address> personAddressLens = Lens(
 );
 
 final Lens<Person, String> personAddressNameLens =
-    personAddressLens.compoundWithOptic(addressStreetNameLens);
+    personAddressLens.compoundWithOptical(addressStreetNameLens);
 
 final Prism<Person, Job?> personJobPrism = Prism(
   getter: (subject) => subject.job,
@@ -231,7 +231,7 @@ final Prism<Person, Job?> personJobPrism = Prism(
 );
 
 final Prism<Person, String?> personJobTitlePrism =
-    personJobPrism.compoundWithOptic<Job, String?>(jobTitleLens.asPrism());
+    personJobPrism.compoundWithOptical(jobTitleLens.asPrism());
 
 final Prism<Person, String?> personJobAddressNamePrism = Prism.compound(
     sourcePrism: Prism.compound(
