@@ -3,7 +3,7 @@ import 'package:optics/optics.dart';
 import 'package:test/test.dart';
 
 void main() {
-  Person? subject;
+  late Person subject;
 
   setUp(() {
     subject = Person(
@@ -11,34 +11,27 @@ void main() {
       address: Address(
         streetName: '123 Capital of Texas Hwy',
       ),
+      job: Job(
+        title: 'Sandwich Artist',
+        address: Address(
+          streetName: '456 Mesa Dr',
+        ),
+      ),
     );
   });
 
   group('Lens', () {
     test('getter', () {
       expect(
-        personAddressLens.getter?.call(subject),
+        personAddressLens.getter(subject),
         equals(Address(streetName: '123 Capital of Texas Hwy')),
       );
 
       expect(
-        personJobLens.getter?.call(subject),
-        isNull,
-      );
-
-      subject = personJobLens.setter?.call(
-        subject,
-        Job(
-          address: Address(
-            streetName: '456 Mesa Dr',
-          ),
-        ),
-      );
-
-      expect(
-        personJobLens.getter?.call(subject),
+        personJobLens.getter(subject),
         equals(
           Job(
+            title: 'Sandwich Artist',
             address: Address(
               streetName: '456 Mesa Dr',
             ),
@@ -47,7 +40,7 @@ void main() {
       );
 
       expect(
-        personJobAddressNameLens.getter?.call(subject),
+        personJobAddressNameLens.getter(subject),
         '456 Mesa Dr',
       );
     });
@@ -60,22 +53,9 @@ void main() {
 
       expect(
         personJobLens.get(subject),
-        isNull,
-      );
-
-      subject = personJobLens.set(
-        subject,
-        Job(
-          address: Address(
-            streetName: '456 Mesa Dr',
-          ),
-        ),
-      );
-
-      expect(
-        personJobLens.get(subject),
         equals(
           Job(
+            title: 'Sandwich Artist',
             address: Address(
               streetName: '456 Mesa Dr',
             ),
@@ -90,17 +70,17 @@ void main() {
     });
 
     test('setter', () {
-      subject = personAddressLens.setter?.call(
+      subject = personAddressLens.setter(
         subject,
         Address(streetName: '789 Mopac Expy'),
       );
 
       expect(
-        subject?.address,
+        subject.address,
         equals(Address(streetName: '789 Mopac Expy')),
       );
 
-      subject = personJobLens.setter?.call(
+      subject = personJobLens.setter(
         subject,
         Job(
           address: Address(streetName: '123 Capital of Texas Hwy'),
@@ -109,7 +89,7 @@ void main() {
       );
 
       expect(
-        subject?.job,
+        subject.job,
         equals(
           Job(
             address: Address(streetName: '123 Capital of Texas Hwy'),
@@ -118,13 +98,13 @@ void main() {
         ),
       );
 
-      subject = personJobAddressNameLens.setter?.call(
+      subject = personJobAddressNameLens.setter(
         subject,
         '124 Research Blvd',
       );
 
       expect(
-        personJobAddressNameLens.getter?.call(subject),
+        personJobAddressNameLens.getter(subject),
         '124 Research Blvd',
       );
     });
@@ -136,7 +116,7 @@ void main() {
       );
 
       expect(
-        subject?.address,
+        subject.address,
         equals(Address(streetName: '789 Mopac Expy')),
       );
 
@@ -149,7 +129,7 @@ void main() {
       );
 
       expect(
-        subject?.job,
+        subject.job,
         equals(
           Job(
             address: Address(streetName: '123 Capital of Texas Hwy'),
@@ -164,7 +144,7 @@ void main() {
       );
 
       expect(
-        subject?.job?.address.streetName,
+        subject.job.address.streetName,
         equals('124 Research Blvd'),
       );
     });
@@ -174,9 +154,9 @@ void main() {
         personAddressNameLens
             .map(
               source: subject,
-              map: (focus) => focus?.toUpperCase(),
+              map: (focus) => focus.toUpperCase(),
             )
-            ?.address
+            .address
             .streetName,
         equals('123 CAPITAL OF TEXAS HWY'),
       );
@@ -184,31 +164,25 @@ void main() {
   });
   group('BoundLens', () {
     test('call', () {
-      expect(subject?.streetName(), equals('123 Capital of Texas Hwy'));
-      expect(subject?.jobTitle(), isNull);
+      expect(subject.streetName(), equals('123 Capital of Texas Hwy'));
+      expect(subject.jobTitle(), 'Sandwich Artist');
     });
 
     test('mutate', () {
-      subject = subject?.streetName.set('789 Mopac Expy');
-      expect(subject?.address.streetName, equals('789 Mopac Expy'));
+      subject = subject.streetName.set('789 Mopac Expy');
+      expect(subject.address.streetName, equals('789 Mopac Expy'));
 
-      subject = subject?.copyWith(
-        job: Job(
-          address: Address(streetName: '124 Research Blvd'),
-        ),
-      );
-
-      subject = subject?.jobTitle.set('Software Engineer');
-      expect(subject?.job?.title, 'Software Engineer');
+      subject = subject.jobTitle.set('Software Engineer');
+      expect(subject.job.title, 'Software Engineer');
     });
 
     test('map', () {
       expect(
-        subject?.streetName
+        subject.streetName
             .map(
-              map: (focus) => focus?.toUpperCase(),
+              map: (focus) => focus.toUpperCase(),
             )
-            ?.address
+            .address
             .streetName,
         equals('123 CAPITAL OF TEXAS HWY'),
       );
@@ -216,73 +190,66 @@ void main() {
   });
 }
 
-final Lens<Job?, String?> jobTitleLens = Lens(
+final Lens<Job, String> jobTitleLens = Lens(
   getter: (subject) {
-    return subject?.title;
+    return subject.title;
   },
   setter: (subject, value) {
-    return subject?.copyWith(title: value);
+    return subject.copyWith(title: value);
   },
 );
 
-final Lens<Job?, Address?> jobAddressLens = Lens(
+final Lens<Job, Address> jobAddressLens = Lens(
   getter: (subject) {
-    return subject?.address;
+    return subject.address;
   },
   setter: (subject, value) {
-    return subject?.copyWith(address: value);
+    return subject.copyWith(address: value);
   },
 );
 
-final Lens<Address?, String?> addressStreetNameLens = Lens(
+final Lens<Address, String> addressStreetNameLens = Lens(
   getter: (subject) {
-    return subject?.streetName;
+    return subject.streetName;
   },
   setter: (subject, value) {
-    return subject?.copyWith(streetName: value);
+    return subject.copyWith(streetName: value);
   },
 );
 
-final Lens<Person?, Address?> personAddressLens = Lens(
-  getter: (subject) => subject?.address,
-  setter: (subject, value) => subject?.copyWith(address: value),
+final Lens<Person, Address> personAddressLens = Lens(
+  getter: (subject) => subject.address,
+  setter: (subject, value) => subject.copyWith(address: value),
 );
 
-final Lens<Person?, String?> personAddressNameLens =
-    personAddressLens.compoundWithFocusFactory((address) {
-  return addressStreetNameLens;
-});
+final Lens<Person, String> personAddressNameLens =
+    personAddressLens.compoundWithOptic(addressStreetNameLens);
 
-final Lens<Person?, Job?> personJobLens = Lens(
-  getter: (subject) => subject?.job,
-  setter: (subject, value) => subject?.copyWith(job: value),
+final Lens<Person, Job> personJobLens = Lens(
+  getter: (subject) => subject.job,
+  setter: (subject, value) => subject.copyWith(job: value),
 );
 
-final Lens<Person?, String?> personJobTitleLens =
-    personJobLens.compoundWithFocusFactory((job) {
-  return jobTitleLens;
-});
+final Lens<Person, String> personJobTitleLens =
+    personJobLens.compoundWithOptic(jobTitleLens);
 
-final Lens<Person?, String?> personJobAddressNameLens =
-    personJobLens.compoundWithFocusFactory((job) {
-  return jobAddressLens;
-}).compoundWithFocusFactory((address) {
-  return addressStreetNameLens;
-});
+final Lens<Person, String> personJobAddressNameLens = personJobLens
+    .compoundWithOptic<Address>(jobAddressLens)
+    .compoundWithOptic(addressStreetNameLens);
 
 @immutable
 class Person {
   const Person({
     required this.name,
     required this.address,
-    this.job,
+    required this.job,
   });
 
   final String name;
 
   final Address address;
 
-  final Job? job;
+  final Job job;
 
   BoundLens<Person, String> get streetName =>
       BoundLens(source: this, lens: personAddressNameLens);
@@ -293,12 +260,12 @@ class Person {
   Person copyWith({
     String? name,
     Address? address,
-    Object? job = Nullable.instance,
+    Job? job,
   }) =>
       Person(
         name: name ?? this.name,
         address: address ?? this.address,
-        job: job == Nullable.instance ? this.job : job as Job?,
+        job: job ?? this.job,
       );
 
   @override
@@ -336,10 +303,10 @@ class Address {
 class Job {
   Job({
     required this.address,
-    this.title,
+    required this.title,
   });
 
-  final String? title;
+  final String title;
 
   final Address address;
 
