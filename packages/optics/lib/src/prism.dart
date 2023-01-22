@@ -2,14 +2,16 @@ import 'package:meta/meta.dart';
 
 import 'optical.dart';
 
+mixin PrismMixin<Source, Focus> on Optical<Source, Focus?> {}
+
 @immutable
-class Prism<Source, Focus> with Optical<Source, Focus?> {
+class Prism<Source, Focus> with Optical<Source, Focus?>, PrismMixin {
   const Prism({
     required this.getter,
     required this.setter,
   });
 
-  static Prism<Source, Focus?> compound<Source, Through, Focus>({
+  static Prism<Source, Focus?> join<Source, Through, Focus>({
     required Optical<Source, Through?> sourcePrism,
     required Optical<Through, Focus?> throughPrism,
   }) =>
@@ -54,33 +56,19 @@ class Prism<Source, Focus> with Optical<Source, Focus?> {
     return set(source, map(get(source)));
   }
 
-  Prism<Source, Refocus?> compoundWithOptical<Through, Refocus>(
-    Optical<Through, Refocus?> prism,
+  @override
+  Prism<Source, Refocus?> compound<Through extends Focus?, Refocus>(
+    covariant PrismMixin<Through, Refocus?> optic,
   ) {
-    return Prism.compound<Source, Through, Refocus?>(
+    return Prism.join<Source, Through, Refocus?>(
       sourcePrism: this as Optical<Source, Through?>,
-      throughPrism: prism,
-    );
-  }
-
-  Prism<Source, Refocus?> compoundWithThroughFactory<Through, Refocus>(
-    CompoundOpticFactory<Through, Refocus?> factory,
-  ) {
-    return compoundWithOptical<Through, Refocus?>(
-      Prism<Through, Refocus?>(
-        getter: (focus) {
-          return factory(focus).getter(focus);
-        },
-        setter: (focus, value) {
-          return factory(focus).setter(focus, value);
-        },
-      ),
+      throughPrism: optic,
     );
   }
 }
 
 @immutable
-class BoundPrism<Source, Focus> with Optical<Source, Focus?> {
+class BoundPrism<Source, Focus> with Optical<Source, Focus?>, PrismMixin {
   const BoundPrism({
     required this.source,
     required this.prism,
@@ -102,26 +90,15 @@ class BoundPrism<Source, Focus> with Optical<Source, Focus?> {
 
   Source map({required Focus? Function(Focus? focus) map}) => set(map(this()));
 
-  BoundPrism<Source, Refocus?> compoundWithOptical<Refocus>(
-    Optical<Focus, Refocus?> prism,
+  @override
+  BoundPrism<Source, Refocus?> compound<Through extends Focus?, Refocus>(
+    covariant PrismMixin<Through, Refocus?> optic,
   ) {
     return BoundPrism(
       source: source,
-      prism: Prism.compound(sourcePrism: this, throughPrism: prism),
-    );
-  }
-
-  BoundPrism<Source, Refocus?> compoundWithThroughFactory<Refocus>(
-    CompoundOpticFactory<Focus, Refocus?> factory,
-  ) {
-    return compoundWithOptical(
-      Prism<Focus, Refocus?>(
-        getter: (focus) {
-          return factory(focus).getter(focus);
-        },
-        setter: (focus, value) {
-          return factory(focus).setter(focus, value);
-        },
+      prism: Prism.join<Source, Through, Refocus?>(
+        sourcePrism: this as Optical<Source, Through?>,
+        throughPrism: optic,
       ),
     );
   }

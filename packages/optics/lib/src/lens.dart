@@ -10,7 +10,7 @@ class Lens<Source, Focus> with Optical<Source, Focus> {
     required this.setter,
   });
 
-  static Lens<Source, Focus> compound<Source, Through, Focus>({
+  static Lens<Source, Focus> join<Source, Through, Focus>({
     required Optical<Source, Through> sourceLens,
     required Optical<Through, Focus> throughLens,
   }) =>
@@ -48,27 +48,13 @@ class Lens<Source, Focus> with Optical<Source, Focus> {
     return set(source, map(get(source)));
   }
 
-  Lens<Source, Refocus> compoundWithOptical<Refocus>(
-    Optical<Focus, Refocus> lens,
+  @override
+  Lens<Source, Refocus> compound<Through extends Focus, Refocus>(
+    covariant Optical<Through, Refocus> optic,
   ) {
-    return Lens.compound<Source, Focus, Refocus>(
-      sourceLens: this,
-      throughLens: lens,
-    );
-  }
-
-  Lens<Source, Refocus> compoundWithThroughFactory<Refocus>(
-    CompoundOpticFactory<Focus, Refocus> factory,
-  ) {
-    return compoundWithOptical<Refocus>(
-      Lens<Focus, Refocus>(
-        getter: (focus) {
-          return factory(focus).getter(focus);
-        },
-        setter: (focus, value) {
-          return factory(focus).setter(focus, value);
-        },
-      ),
+    return Lens.join<Source, Through, Refocus>(
+      sourceLens: this as Optical<Source, Through>,
+      throughLens: optic,
     );
   }
 
@@ -101,30 +87,22 @@ class BoundLens<Source, Focus> with Optical<Source, Focus> {
   @override
   Mutator<Source, Focus> get setter => lens.setter;
 
-  Source map({required Focus Function(Focus focus) map}) => set(map(this()));
+  Source map(Focus Function(Focus focus) map) => set(map(this()));
 
-  BoundLens<Source, Refocus> compoundWithOptical<Refocus>(
-    Optical<Focus, Refocus> lens,
+  @override
+  BoundLens<Source, Refocus> compound<Through extends Focus, Refocus>(
+    covariant Optical<Through, Refocus> optic,
   ) {
     return BoundLens(
       source: source,
-      lens: this.lens.compoundWithOptical(lens),
-    );
-  }
-
-  BoundLens<Source, Refocus> compoundWithThroughFactory<Refocus>(
-    CompoundOpticFactory<Focus, Refocus> factory,
-  ) {
-    return BoundLens(
-      source: source,
-      lens: lens.compoundWithThroughFactory(factory),
+      lens: lens.compound(optic),
     );
   }
 
   Prism<Source, Focus?> asPrism() {
     return Prism<Source, Focus?>(
       getter: getter,
-      setter: setter as Mutator<Source, Focus?>,
+      setter: (source, value) => setter(source, value as Focus),
     );
   }
 }
