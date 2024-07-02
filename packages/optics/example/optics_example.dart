@@ -61,7 +61,7 @@ class Person {
       );
 
   @override
-  bool operator ==(Object? other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       other is Person &&
           name == other.name &&
@@ -100,7 +100,7 @@ class Address {
       );
 
   @override
-  bool operator ==(Object? other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       other is Address && streetName == other.streetName;
 
@@ -139,7 +139,7 @@ class Job {
       );
 
   @override
-  bool operator ==(Object? other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       other is Job && title == other.title && address == other.address;
 
