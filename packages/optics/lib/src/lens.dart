@@ -58,7 +58,8 @@ class Lens<Source, Focus> with Optical<Source, Focus> {
   Prism<Source, Focus?> asPrism() {
     return Prism<Source, Focus?>(
       getter: getter,
-      setter: (source, value) => setter(source, value as Focus),
+      setter: (source, value) =>
+          value is Focus ? setter(source, value) : source,
     );
   }
 }

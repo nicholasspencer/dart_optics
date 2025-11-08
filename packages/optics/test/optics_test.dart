@@ -113,6 +113,16 @@ void main() {
         subject.job?.address.streetName,
         '124 Research Blvd',
       );
+
+      subject = PersonOptics.job
+          .compound(JobOptics.address.asPrism())
+          .compound(AddressOptics.streetName.asPrism())
+          .setter(subject, null);
+
+      expect(
+        subject.job?.address.streetName,
+        '124 Research Blvd',
+      );
     });
 
     test('mutate', () {
@@ -148,6 +158,16 @@ void main() {
           .compound(JobOptics.address.asPrism())
           .compound(AddressOptics.streetName.asPrism())
           .set(subject, '124 Research Blvd');
+
+      expect(
+        subject.job?.address.streetName,
+        equals('124 Research Blvd'),
+      );
+
+      subject = PersonOptics.job
+          .compound(JobOptics.address.asPrism())
+          .compound(AddressOptics.streetName.asPrism())
+          .set(subject, null);
 
       expect(
         subject.job?.address.streetName,
@@ -191,6 +211,10 @@ void main() {
       subject = subject.jobOptic
           .compound(JobOptics.title.asPrism())
           .set('Software Engineer');
+
+      expect(subject.job?.title, 'Software Engineer');
+
+      subject = subject.jobOptic.compound(JobOptics.title.asPrism()).set(null);
 
       expect(subject.job?.title, 'Software Engineer');
     });

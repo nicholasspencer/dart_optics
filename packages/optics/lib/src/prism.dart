@@ -1,9 +1,7 @@
 part of 'optical.dart';
 
-mixin PrismMixin<Source, Focus> on Optical<Source, Focus?> {}
-
 @immutable
-class Prism<Source, Focus> with Optical<Source, Focus?>, PrismMixin {
+class Prism<Source, Focus> with Optical<Source, Focus?> {
   const Prism({
     required this.getter,
     required this.setter,
@@ -56,7 +54,7 @@ class Prism<Source, Focus> with Optical<Source, Focus?>, PrismMixin {
 
   @override
   Prism<Source, Refocus?> compound<Through extends Focus?, Refocus>(
-    covariant PrismMixin<Through, Refocus?> optic,
+    Optical<Through, Refocus?> optic,
   ) {
     return Prism.join<Source, Through, Refocus?>(
       sourcePrism: this as Optical<Source, Through?>,
@@ -66,7 +64,7 @@ class Prism<Source, Focus> with Optical<Source, Focus?>, PrismMixin {
 }
 
 @immutable
-class BoundPrism<Source, Focus> with Optical<Source, Focus?>, PrismMixin {
+class BoundPrism<Source, Focus> with Optical<Source, Focus?> {
   const BoundPrism({
     required this.source,
     required this.prism,
@@ -90,7 +88,7 @@ class BoundPrism<Source, Focus> with Optical<Source, Focus?>, PrismMixin {
 
   @override
   BoundPrism<Source, Refocus?> compound<Through extends Focus?, Refocus>(
-    covariant PrismMixin<Through, Refocus?> optic,
+    covariant Optical<Through, Refocus?> optic,
   ) {
     return BoundPrism(
       source: source,

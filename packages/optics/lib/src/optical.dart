@@ -1,3 +1,5 @@
+import 'package:meta/meta.dart';
+
 part 'lens.dart';
 part 'prism.dart';
 
@@ -8,9 +10,11 @@ typedef Mutator<Source, Focus> = Source Function(
   Focus value,
 );
 
+typedef AnyOptical = Optical<dynamic, dynamic>;
+
 mixin Optical<Source, Focus> {
-  Optical compound<Through extends Focus, Refocus>(
-    Optical optic,
+  AnyOptical compound<Through extends Focus, Refocus>(
+    covariant AnyOptical optic,
   );
 
   Accessor<Source, Focus> get getter;
