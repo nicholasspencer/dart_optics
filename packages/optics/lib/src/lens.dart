@@ -1,7 +1,4 @@
-import 'package:meta/meta.dart';
-
-import 'optical.dart';
-import 'prism.dart';
+part of 'optical.dart';
 
 @immutable
 class Lens<Source, Focus> with Optical<Source, Focus> {

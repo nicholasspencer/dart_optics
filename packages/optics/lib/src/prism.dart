@@ -1,6 +1,4 @@
-import 'package:meta/meta.dart';
-
-import 'optical.dart';
+part of 'optical.dart';
 
 mixin PrismMixin<Source, Focus> on Optical<Source, Focus?> {}
 

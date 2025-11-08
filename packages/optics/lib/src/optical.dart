@@ -1,3 +1,6 @@
+part 'lens.dart';
+part 'prism.dart';
+
 typedef Accessor<Source, Focus> = Focus Function(Source source);
 
 typedef Mutator<Source, Focus> = Source Function(
