@@ -6,7 +6,7 @@ repository: https://github.com/nicholasspencer/dart_optics/tree/main/packages/op
 issue_tracker: https://github.com/nicholasspencer/dart-optics/issues
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.9.0
 
 resolution: workspace
 

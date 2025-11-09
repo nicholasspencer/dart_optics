@@ -1,32 +1,8 @@
 part of 'optical.dart';
 
 @immutable
-class Lens<Source, Focus> with Optical<Source, Focus> {
-  const Lens({
-    required this.getter,
-    required this.setter,
-  });
-
-  static Lens<Source, Focus> join<Source, Through, Focus>({
-    required Optical<Source, Through> sourceLens,
-    required Optical<Through, Focus> throughLens,
-  }) =>
-      Lens<Source, Focus>(
-        getter: (source) {
-          return throughLens.getter(
-            sourceLens.getter(source),
-          );
-        },
-        setter: (source, value) {
-          return sourceLens.setter(
-            source,
-            throughLens.setter(
-              sourceLens.getter(source),
-              value,
-            ),
-          );
-        },
-      );
+class Lens<Source, Focus> extends Optical<Source, Focus> {
+  const Lens({required this.getter, required this.setter});
 
   @override
   final Accessor<Source, Focus> getter;
@@ -46,12 +22,37 @@ class Lens<Source, Focus> with Optical<Source, Focus> {
   }
 
   @override
-  Lens<Source, Refocus> compound<Through extends Focus, Refocus>(
-    covariant Optical<Through, Refocus> optic,
+  Lens<Source, Resolution> compound<Through extends Focus?, Resolution>(
+    Optical<Through, Resolution> optic,
   ) {
-    return Lens.join<Source, Through, Refocus>(
-      sourceLens: this as Optical<Source, Through>,
-      throughLens: optic,
+    return Lens<Source, Resolution>(
+      getter: (source) {
+        final through = getter(source);
+
+        if (through is! Through) {
+          throw ArgumentError(
+            'Expected value of type $Through but got ${through.runtimeType}',
+            'optic',
+          );
+        }
+
+        return optic.getter(through);
+      },
+      setter: (source, value) {
+        final through = getter(source);
+
+        if (through is! Through) {
+          return source;
+        }
+
+        final updatedThrough = optic.setter(through, value);
+
+        if (updatedThrough is! Focus) {
+          return source;
+        }
+
+        return setter(source, updatedThrough);
+      },
     );
   }
 
@@ -65,11 +66,8 @@ class Lens<Source, Focus> with Optical<Source, Focus> {
 }
 
 @immutable
-class BoundLens<Source, Focus> with Optical<Source, Focus> {
-  const BoundLens({
-    required this.source,
-    required this.lens,
-  });
+class BoundLens<Source, Focus> extends Optical<Source, Focus> {
+  const BoundLens({required this.source, required this.lens});
 
   final Source source;
 
@@ -88,19 +86,18 @@ class BoundLens<Source, Focus> with Optical<Source, Focus> {
   Source map(Focus Function(Focus focus) map) => set(map(this()));
 
   @override
-  BoundLens<Source, Refocus> compound<Through extends Focus, Refocus>(
-    covariant Optical<Through, Refocus> optic,
+  BoundLens<Source, Resolution> compound<Through extends Focus?, Resolution>(
+    Optical<Through, Resolution> optic,
   ) {
-    return BoundLens(
-      source: source,
-      lens: lens.compound(optic),
-    );
+    return BoundLens(source: source, lens: lens.compound(optic));
   }
 
+  @protected
   Prism<Source, Focus?> asPrism() {
     return Prism<Source, Focus?>(
       getter: getter,
-      setter: (source, value) => setter(source, value as Focus),
+      setter: (source, value) =>
+          value is Focus ? setter(source, value) : source,
     );
   }
 }

@@ -1,39 +1,8 @@
 part of 'optical.dart';
 
 @immutable
-class Prism<Source, Focus> with Optical<Source, Focus?> {
-  const Prism({
-    required this.getter,
-    required this.setter,
-  });
-
-  static Prism<Source, Focus?> join<Source, Through, Focus>({
-    required Optical<Source, Through?> sourcePrism,
-    required Optical<Through, Focus?> throughPrism,
-  }) =>
-      Prism<Source, Focus?>(
-        getter: (source) {
-          final focus = sourcePrism.getter(source);
-
-          if (focus == null) {
-            return null;
-          }
-
-          return throughPrism.getter(focus);
-        },
-        setter: (source, value) {
-          final focus = sourcePrism.getter(source);
-
-          if (focus == null) {
-            return source;
-          }
-
-          return sourcePrism.setter(
-            source,
-            throughPrism.setter(focus, value),
-          );
-        },
-      );
+class Prism<Source, Focus> extends Optical<Source, Focus?> {
+  const Prism({required this.getter, required this.setter});
 
   @override
   final Accessor<Source, Focus?> getter;
@@ -53,26 +22,24 @@ class Prism<Source, Focus> with Optical<Source, Focus?> {
   }
 
   @override
-  Prism<Source, Refocus?> compound<Through extends Focus?, Refocus>(
-    Optical<Through, Refocus?> optic,
-  ) {
-    return Prism.join<Source, Through, Refocus?>(
-      sourcePrism: this as Optical<Source, Through?>,
-      throughPrism: optic,
+  AffineTraversal<Source, Focus, Through, Resolution?> compound<
+    Through extends Focus?,
+    Resolution
+  >(Optical<Through, Resolution> optic) {
+    return AffineTraversal<Source, Focus, Through, Resolution?>(
+      source: this,
+      through: optic,
     );
   }
 }
 
 @immutable
-class BoundPrism<Source, Focus> with Optical<Source, Focus?> {
-  const BoundPrism({
-    required this.source,
-    required this.prism,
-  });
+class BoundPrism<Source, Focus> extends Optical<Source, Focus?> {
+  const BoundPrism({required this.source, required this.prism});
 
   final Source source;
 
-  final Prism<Source, Focus?> prism;
+  final Optical<Source, Focus?> prism;
 
   Focus? call() => getter(source);
 
@@ -87,14 +54,14 @@ class BoundPrism<Source, Focus> with Optical<Source, Focus?> {
   Source map({required Focus? Function(Focus? focus) map}) => set(map(this()));
 
   @override
-  BoundPrism<Source, Refocus?> compound<Through extends Focus?, Refocus>(
-    covariant Optical<Through, Refocus?> optic,
+  BoundPrism<Source, Resolution?> compound<Through extends Focus?, Resolution>(
+    Optical<Through, Resolution> optic,
   ) {
     return BoundPrism(
       source: source,
-      prism: Prism.join<Source, Through, Refocus?>(
-        sourcePrism: this as Optical<Source, Through?>,
-        throughPrism: optic,
+      prism: AffineTraversal<Source, Focus, Through, Resolution?>(
+        source: this,
+        through: optic,
       ),
     );
   }

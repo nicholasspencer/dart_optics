@@ -3,11 +3,7 @@ import 'package:optics/optics.dart';
 
 @immutable
 class Person {
-  const Person({
-    required this.name,
-    required this.address,
-    this.job,
-  });
+  const Person({required this.name, required this.address, this.job});
 
   final String name;
 
@@ -15,16 +11,11 @@ class Person {
 
   final Job? job;
 
-  Person copyWith({
-    String? name,
-    Address? address,
-    Job? job,
-  }) =>
-      Person(
-        name: name ?? this.name,
-        address: address ?? this.address,
-        job: job ?? this.job,
-      );
+  Person copyWith({String? name, Address? address, Job? job}) => Person(
+    name: name ?? this.name,
+    address: address ?? this.address,
+    job: job ?? this.job,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -44,48 +35,60 @@ extension PersonOptics on Person {
     setter: (subject, value) => subject.copyWith(address: value),
   );
 
-  static final Lens<Person, String> addressName =
-      address.compound(AddressOptics.streetName);
+  static final Lens<Person, String> addressName = address.compound(
+    AddressOptics.streetName,
+  );
 
   static final Prism<Person, Job?> job = Prism(
     getter: (subject) => subject.job,
     setter: (subject, value) => subject.copyWith(job: value),
   );
 
-  static final Prism<Person, String?> jobTitle =
-      job.compound(JobOptics.title.asPrism());
+  static final jobTitle = job.compound(JobOptics.title);
 
-  static final Prism<Person, String?> jobAddressName = Prism.join(
-    sourcePrism: Prism.join(
-      sourcePrism: job,
-      throughPrism: JobOptics.address.asPrism(),
-    ),
-    throughPrism: AddressOptics.streetName.asPrism(),
+  static final jobAddressName = AffineTraversal(
+    source: AffineTraversal(source: job, through: JobOptics.address),
+    through: AddressOptics.streetName,
   );
 
   BoundLens<Person, Address> get addressOptic =>
       BoundLens(source: this, lens: address);
 
   BoundPrism<Person, Job?> get jobOptic => BoundPrism(source: this, prism: job);
+
+  static final worksInBuildingName = AffineTraversal(
+    source: AffineTraversal(source: job, through: JobOptics.address),
+    through: AddressOptics.buildingName,
+  );
+
+  // static final _worksInBuildingName = AffineTraversal(
+  //   source: job,
+  //   through: AddressOptics.buildingName,
+  // );
 }
 
 @immutable
 class Address {
-  const Address({required this.streetName});
+  const Address({required this.streetName, this.buildingName});
 
   final String streetName;
 
-  Address copyWith({String? streetName}) => Address(
-        streetName: streetName ?? this.streetName,
-      );
+  final String? buildingName;
+
+  Address copyWith({String? streetName, String? buildingName}) => Address(
+    streetName: streetName ?? this.streetName,
+    buildingName: buildingName ?? this.buildingName,
+  );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Address && streetName == other.streetName;
+      other is Address &&
+          streetName == other.streetName &&
+          buildingName == other.buildingName;
 
   @override
-  int get hashCode => streetName.hashCode;
+  int get hashCode => streetName.hashCode ^ buildingName.hashCode;
 }
 
 extension AddressOptics on Address {
@@ -98,25 +101,29 @@ extension AddressOptics on Address {
     },
   );
 
+  static final Lens<Address, String?> buildingName = Lens(
+    getter: (subject) {
+      return subject.buildingName;
+    },
+    setter: (subject, value) {
+      return subject.copyWith(buildingName: value);
+    },
+  );
+
   BoundLens<Address, String> get streetNameOptic =>
       BoundLens(source: this, lens: streetName);
 }
 
 @immutable
 class Job {
-  Job({
-    required this.address,
-    required this.title,
-  });
+  Job({required this.address, required this.title});
 
   final String title;
 
   final Address address;
 
-  Job copyWith({String? title, Address? address}) => Job(
-        title: title ?? this.title,
-        address: address ?? this.address,
-      );
+  Job copyWith({String? title, Address? address}) =>
+      Job(title: title ?? this.title, address: address ?? this.address);
 
   @override
   bool operator ==(Object other) =>
@@ -154,26 +161,26 @@ extension JobOptics on Job {
 
 extension StringOptics on String {
   BoundLens<String, String> get indefiniteArticle => BoundLens(
-        source: this,
-        lens: Lens(
-          getter: (source) {
-            if (source.isEmpty) {
-              return source;
-            }
+    source: this,
+    lens: Lens(
+      getter: (source) {
+        if (source.isEmpty) {
+          return source;
+        }
 
-            final vowels = ['a', 'e', 'i', 'o', 'u'];
+        final vowels = ['a', 'e', 'i', 'o', 'u'];
 
-            for (final vowel in vowels) {
-              if (source.toLowerCase().startsWith(vowel)) {
-                return 'an';
-              }
-            }
+        for (final vowel in vowels) {
+          if (source.toLowerCase().startsWith(vowel)) {
+            return 'an';
+          }
+        }
 
-            return 'a';
-          },
-          setter: (source, value) => value,
-        ),
-      );
+        return 'a';
+      },
+      setter: (source, value) => value,
+    ),
+  );
 }
 
 class Nullable {
