@@ -10,15 +10,18 @@ void main() {
   assert(person.address.streetName == '123 Capital of Texas Hwy');
 
   /// Joe moved!
-  person = person.addressOptic.compound(AddressOptics.streetName).set(
-        '456 Mesa Dr',
-      );
+  person = person.addressOptic
+      .compound(AddressOptics.streetName)
+      .set('456 Mesa Dr');
 
   assert(person.address.streetName == '456 Mesa Dr');
 
   /// Joe got a job!
-  person = BoundPrism(source: person, prism: PersonOptics.job).set(
-    Job(address: Address(streetName: '789 E 6th St'), title: 'Sales bro'),
+  person = SourceBinding(source: person, optic: PersonOptics.job).set(
+    Job(
+      address: Address(streetName: '789 E 6th St'),
+      title: 'Sales bro',
+    ),
   );
 
   assert(person.job?.title == 'Sales bro');
@@ -30,18 +33,16 @@ void main() {
 
   assert(person.job?.title == 'Executive sales bro');
 
-  print('''Howdy, ${person.name}!
+  print(
+    '''Howdy, ${person.name}!
 You're ${personJobTitle.get(person)?.indefiniteArticle()} ${personJobTitle.get(person)}.
-Nice place you've got @ ${person.addressOptic.compound(AddressOptics.streetName)()}.''');
+Nice place you've got @ ${person.addressOptic.compound(AddressOptics.streetName)()}.''',
+  );
 }
 
 @immutable
 class Person {
-  const Person({
-    required this.name,
-    required this.address,
-    this.job,
-  });
+  const Person({required this.name, required this.address, this.job});
 
   final String name;
 
@@ -49,16 +50,11 @@ class Person {
 
   final Job? job;
 
-  Person copyWith({
-    String? name,
-    Address? address,
-    Job? job,
-  }) =>
-      Person(
-        name: name ?? this.name,
-        address: address ?? this.address,
-        job: job ?? this.job,
-      );
+  Person copyWith({String? name, Address? address, Job? job}) => Person(
+    name: name ?? this.name,
+    address: address ?? this.address,
+    job: job ?? this.job,
+  );
 
   @override
   bool operator ==(Object other) =>
@@ -83,10 +79,11 @@ extension PersonOptics on Person {
     setter: (subject, value) => subject.copyWith(job: value),
   );
 
-  BoundLens<Person, Address> get addressOptic =>
-      BoundLens(source: this, lens: address);
+  SourceBinding<Person, Address> get addressOptic =>
+      SourceBinding(source: this, optic: address);
 
-  BoundPrism<Person, Job?> get jobOptic => BoundPrism(source: this, prism: job);
+  SourceBinding<Person, Job?> get jobOptic =>
+      SourceBinding(source: this, optic: job);
 }
 
 @immutable
@@ -95,9 +92,8 @@ class Address {
 
   final String streetName;
 
-  Address copyWith({String? streetName}) => Address(
-        streetName: streetName ?? this.streetName,
-      );
+  Address copyWith({String? streetName}) =>
+      Address(streetName: streetName ?? this.streetName);
 
   @override
   bool operator ==(Object other) =>
@@ -118,25 +114,20 @@ extension AddressOptics on Address {
     },
   );
 
-  BoundLens<Address, String> get streetNameOptic =>
-      BoundLens(source: this, lens: streetName);
+  SourceBinding<Address, String> get streetNameOptic =>
+      SourceBinding(source: this, optic: streetName);
 }
 
 @immutable
 class Job {
-  Job({
-    required this.address,
-    required this.title,
-  });
+  Job({required this.address, required this.title});
 
   final String title;
 
   final Address address;
 
-  Job copyWith({String? title, Address? address}) => Job(
-        title: title ?? this.title,
-        address: address ?? this.address,
-      );
+  Job copyWith({String? title, Address? address}) =>
+      Job(title: title ?? this.title, address: address ?? this.address);
 
   @override
   bool operator ==(Object other) =>
@@ -166,34 +157,35 @@ extension JobOptics on Job {
     },
   );
 
-  BoundLens<Job, String> get titleOptic => BoundLens(source: this, lens: title);
+  SourceBinding<Job, String> get titleOptic =>
+      SourceBinding(source: this, optic: title);
 
-  BoundLens<Job, Address> get addressOptic =>
-      BoundLens(source: this, lens: address);
+  SourceBinding<Job, Address> get addressOptic =>
+      SourceBinding(source: this, optic: address);
 }
 
 extension StringOptics on String {
-  BoundLens<String, String> get indefiniteArticle => BoundLens(
-        source: this,
-        lens: Lens(
-          getter: (source) {
-            if (source.isEmpty) {
-              return source;
-            }
+  SourceBinding<String, String> get indefiniteArticle => SourceBinding(
+    source: this,
+    optic: Lens(
+      getter: (source) {
+        if (source.isEmpty) {
+          return source;
+        }
 
-            final vowels = ['a', 'e', 'i', 'o', 'u'];
+        final vowels = ['a', 'e', 'i', 'o', 'u'];
 
-            for (final vowel in vowels) {
-              if (source.toLowerCase().startsWith(vowel)) {
-                return 'an';
-              }
-            }
+        for (final vowel in vowels) {
+          if (source.toLowerCase().startsWith(vowel)) {
+            return 'an';
+          }
+        }
 
-            return 'a';
-          },
-          setter: (source, value) => value,
-        ),
-      );
+        return 'a';
+      },
+      setter: (source, value) => value,
+    ),
+  );
 }
 
 class Nullable {

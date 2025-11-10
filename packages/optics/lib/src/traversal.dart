@@ -12,17 +12,19 @@ class AffineTraversal<Source, Focus, Through extends Focus?, Resolution>
 
   final Optical<Through, Resolution?> _through;
 
-  Optical<Source, Focus?> get source => _source;
+  Optical<Source, Focus?> get source => switch (_source) {
+    Lens<Source, Focus>() => _source.asPrism(),
+    Optical<Source, Focus?>() => _source,
+  };
 
   Optical<Through, Resolution?> get through => switch (_through) {
     Lens<Through, Resolution>() => _through.asPrism(),
-    BoundLens<Through, Resolution>() => _through.asPrism(),
     Optical<Through, Resolution?>() => _through,
   };
 
   @override
   Accessor<Source, Resolution?> get getter => (source) {
-    var throughValue = _source.getter(source);
+    var throughValue = this.source.getter(source);
 
     if (throughValue is! Through) {
       return null;

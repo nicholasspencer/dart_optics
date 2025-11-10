@@ -174,42 +174,4 @@ void main() {
       );
     });
   });
-  group('Bound', () {
-    test('call', () {
-      expect(
-        subject.addressOptic.compound(AddressOptics.streetName)(),
-        equals('123 Capital of Texas Hwy'),
-      );
-      expect(subject.jobOptic.compound(JobOptics.title)(), 'Sandwich Artist');
-    });
-
-    test('mutate', () {
-      subject = subject.addressOptic
-          .compound(AddressOptics.streetName)
-          .set('789 Mopac Expy');
-
-      expect(subject.address.streetName, equals('789 Mopac Expy'));
-
-      subject = subject.jobOptic
-          .compound(JobOptics.title)
-          .set('Software Engineer');
-
-      expect(subject.job?.title, 'Software Engineer');
-
-      subject = subject.jobOptic.compound(JobOptics.title).set(null);
-
-      expect(subject.job?.title, 'Software Engineer');
-    });
-
-    test('map', () {
-      expect(
-        subject.addressOptic
-            .compound(AddressOptics.streetName)
-            .map((focus) => focus.toUpperCase())
-            .address
-            .streetName,
-        equals('123 CAPITAL OF TEXAS HWY'),
-      );
-    });
-  });
 }

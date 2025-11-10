@@ -1,5 +1,7 @@
 import 'package:meta/meta.dart';
 
+part 'binding.dart';
+part 'iso.dart';
 part 'lens.dart';
 part 'prism.dart';
 part 'traversal.dart';
@@ -10,6 +12,7 @@ typedef Mutator<Source, Focus> = Source Function(Source source, Focus value);
 
 typedef AnyOptical = Optical<dynamic, dynamic>;
 
+@immutable
 sealed class Optical<Source, Focus> {
   const Optical();
 

@@ -51,20 +51,15 @@ extension PersonOptics on Person {
     through: AddressOptics.streetName,
   );
 
-  BoundLens<Person, Address> get addressOptic =>
-      BoundLens(source: this, lens: address);
+  SourceBinding<Person, Address> get addressOptic =>
+      SourceBinding(source: this, optic: address);
 
-  BoundPrism<Person, Job?> get jobOptic => BoundPrism(source: this, prism: job);
+  Prism<Person, Job?> get jobOptic => asIso().compoundPrism(job);
 
   static final worksInBuildingName = AffineTraversal(
     source: AffineTraversal(source: job, through: JobOptics.address),
     through: AddressOptics.buildingName,
   );
-
-  // static final _worksInBuildingName = AffineTraversal(
-  //   source: job,
-  //   through: AddressOptics.buildingName,
-  // );
 }
 
 @immutable
@@ -110,8 +105,8 @@ extension AddressOptics on Address {
     },
   );
 
-  BoundLens<Address, String> get streetNameOptic =>
-      BoundLens(source: this, lens: streetName);
+  SourceBinding<Address, String> get streetNameOptic =>
+      SourceBinding(source: this, optic: streetName);
 }
 
 @immutable
@@ -153,16 +148,17 @@ extension JobOptics on Job {
     },
   );
 
-  BoundLens<Job, String> get titleOptic => BoundLens(source: this, lens: title);
+  SourceBinding<Job, String> get titleOptic =>
+      SourceBinding(source: this, optic: title);
 
-  BoundLens<Job, Address> get addressOptic =>
-      BoundLens(source: this, lens: address);
+  SourceBinding<Job, Address> get addressOptic =>
+      SourceBinding(source: this, optic: address);
 }
 
 extension StringOptics on String {
-  BoundLens<String, String> get indefiniteArticle => BoundLens(
+  SourceBinding<String, String> get indefiniteArticle => SourceBinding(
     source: this,
-    lens: Lens(
+    optic: Lens(
       getter: (source) {
         if (source.isEmpty) {
           return source;
