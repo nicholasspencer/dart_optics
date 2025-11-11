@@ -9,17 +9,6 @@ class Lens<Source, Focus> extends Optical<Source, Focus> {
   @override
   final Mutator<Source, Focus> setter;
 
-  Focus get(Source source) => getter(source);
-
-  Source set(Source source, Focus value) => setter(source, value);
-
-  Source map({
-    required Source source,
-    required Focus Function(Focus focus) map,
-  }) {
-    return set(source, map(get(source)));
-  }
-
   @override
   Lens<Source, Resolution> compound<Through extends Focus?, Resolution>(
     Optical<Through, Resolution> optic,

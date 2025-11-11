@@ -53,7 +53,7 @@ void main() {
       );
     });
 
-    test('view', () {
+    test('get', () {
       expect(
         PersonOptics.address.get(subject),
         equals(Address(streetName: '123 Capital of Texas Hwy')),
@@ -122,7 +122,7 @@ void main() {
       expect(subject.job?.address.streetName, '124 Research Blvd');
     });
 
-    test('mutate', () {
+    test('set', () {
       subject = PersonOptics.address.set(
         subject,
         Address(streetName: '789 Mopac Expy'),
@@ -161,17 +161,6 @@ void main() {
           .set(subject, null);
 
       expect(subject.job?.address.streetName, equals('124 Research Blvd'));
-    });
-
-    test('map', () {
-      expect(
-        PersonOptics.address
-            .compound(AddressOptics.streetName)
-            .map(source: subject, map: (focus) => focus.toUpperCase())
-            .address
-            .streetName,
-        equals('123 CAPITAL OF TEXAS HWY'),
-      );
     });
   });
 }

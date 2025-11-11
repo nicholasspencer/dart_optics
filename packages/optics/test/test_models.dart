@@ -1,32 +1,26 @@
-import 'package:meta/meta.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:optics/optics.dart';
 
-@immutable
-class Person {
-  const Person({required this.name, required this.address, this.job});
+part 'test_models.freezed.dart';
 
-  final String name;
+@freezed
+abstract class Person with _$Person {
+  const factory Person({
+    required String name,
+    required Address address,
+    Job? job,
+  }) = _Person;
+}
 
-  final Address address;
+@freezed
+abstract class Address with _$Address {
+  const factory Address({required String streetName, String? buildingName}) =
+      _Address;
+}
 
-  final Job? job;
-
-  Person copyWith({String? name, Address? address, Job? job}) => Person(
-    name: name ?? this.name,
-    address: address ?? this.address,
-    job: job ?? this.job,
-  );
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Person &&
-          name == other.name &&
-          address == other.address &&
-          job == other.job;
-
-  @override
-  int get hashCode => Object.hash(name, address, job);
+@freezed
+abstract class Job with _$Job {
+  const factory Job({required Address address, required String title}) = _Job;
 }
 
 extension PersonOptics on Person {
@@ -62,30 +56,6 @@ extension PersonOptics on Person {
   );
 }
 
-@immutable
-class Address {
-  const Address({required this.streetName, this.buildingName});
-
-  final String streetName;
-
-  final String? buildingName;
-
-  Address copyWith({String? streetName, String? buildingName}) => Address(
-    streetName: streetName ?? this.streetName,
-    buildingName: buildingName ?? this.buildingName,
-  );
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Address &&
-          streetName == other.streetName &&
-          buildingName == other.buildingName;
-
-  @override
-  int get hashCode => streetName.hashCode ^ buildingName.hashCode;
-}
-
 extension AddressOptics on Address {
   static final Lens<Address, String> streetName = Lens(
     getter: (subject) {
@@ -107,26 +77,6 @@ extension AddressOptics on Address {
 
   SourceBinding<Address, String> get streetNameOptic =>
       SourceBinding(source: this, optic: streetName);
-}
-
-@immutable
-class Job {
-  Job({required this.address, required this.title});
-
-  final String title;
-
-  final Address address;
-
-  Job copyWith({String? title, Address? address}) =>
-      Job(title: title ?? this.title, address: address ?? this.address);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Job && title == other.title && address == other.address;
-
-  @override
-  int get hashCode => Object.hash(title, address);
 }
 
 extension JobOptics on Job {
@@ -177,9 +127,4 @@ extension StringOptics on String {
       setter: (source, value) => value,
     ),
   );
-}
-
-class Nullable {
-  const Nullable();
-  static const instance = Nullable();
 }

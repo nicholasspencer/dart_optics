@@ -20,6 +20,10 @@ sealed class Optical<Source, Focus> {
 
   Mutator<Source, Focus> get setter;
 
+  Focus get(Source source) => getter(source);
+
+  Source set(Source source, Focus value) => setter(source, value);
+
   AnyOptical compound<Through extends Focus?, Resolution>(
     covariant AnyOptical optic,
   );

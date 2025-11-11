@@ -44,17 +44,6 @@ class AffineTraversal<Source, Focus, Through extends Focus?, Resolution>
     return this.source.setter(source, through.setter(throughValue, value));
   };
 
-  Resolution? get(Source source) => getter(source);
-
-  Source set(Source source, Resolution? value) => setter(source, value);
-
-  Source map({
-    required Source source,
-    required Resolution? Function(Resolution? focus) map,
-  }) {
-    return set(source, map(get(source)));
-  }
-
   @override
   AffineTraversal<Source, Resolution, NewThrough, NewResolution?> compound<
     NewThrough extends Resolution?,
