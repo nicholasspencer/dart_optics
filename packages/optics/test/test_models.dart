@@ -128,3 +128,46 @@ extension StringOptics on String {
     ),
   );
 }
+
+// Test doubles for type guard testing
+class Animal {
+  final String name;
+  const Animal(this.name);
+}
+
+class Cat extends Animal {
+  const Cat(super.name);
+}
+
+class Dog extends Animal {
+  const Dog(super.name);
+}
+
+class Zoo {
+  final Animal animal;
+  const Zoo(this.animal);
+
+  Zoo copyWith({Animal? animal}) => Zoo(animal ?? this.animal);
+}
+
+// Test optics for type guard scenarios
+final zooAnimal = Lens<Zoo, Animal>(
+  getter: (z) => z.animal,
+  setter: (z, a) => z.copyWith(animal: a),
+);
+
+final catName = Lens<Cat, String>(
+  getter: (c) => c.name,
+  setter: (c, v) => Cat(v),
+);
+
+// Helper extension for binding tests
+extension SourceBindingHelpers on Person {
+  SourceBinding<Person, Job?> get jobBinding =>
+      SourceBinding(source: this, optic: PersonOptics.job);
+}
+
+final utf8Iso = Iso<String, List<int>>(
+  getter: (s) => s.codeUnits,
+  setter: (s, bytes) => String.fromCharCodes(bytes),
+);

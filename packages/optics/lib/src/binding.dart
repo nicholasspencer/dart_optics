@@ -22,4 +22,8 @@ final class SourceBinding<Source, Focus> {
       optic: AffineTraversal(source: optic, through: through),
     );
   }
+
+  SourceBinding<Source, Focus> bind(Source source) {
+    return SourceBinding<Source, Focus>(source: source, optic: optic);
+  }
 }
