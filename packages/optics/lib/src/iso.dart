@@ -1,32 +1,32 @@
 part of 'optical.dart';
 
-class Iso<Source> extends Optical<Source, Source> {
+class Iso<Source, Focus> extends Optical<Source, Focus> {
   const Iso({required this.getter, required this.setter});
 
-  const factory Iso.identity() = _Iso<Source>;
+  const factory Iso.identity() = _Iso<Source, Focus>;
 
   @override
-  final Accessor<Source, Source> getter;
+  final Accessor<Source, Focus> getter;
 
   @override
-  final Mutator<Source, Source> setter;
+  final Mutator<Source, Focus> setter;
 
   @override
-  Optical<Source, Resolution?> compound<Through extends Source?, Resolution>(
+  Optical<Source, Resolution?> compound<Through extends Focus?, Resolution>(
     Optical<Through, Resolution?> optic,
   ) {
     return switch (optic) {
       Lens<Through, Resolution>() => compoundLens(optic),
-      Prism<Through, Resolution?>() => compoundPrism(optic),
+      Prism<Through, Resolution>() => compoundPrism(optic),
       Optical<Through, Resolution?>() =>
-        AffineTraversal<Source, Source, Through, Resolution?>(
+        AffineTraversal<Source, Focus, Through, Resolution>(
           source: this,
           through: optic,
         ),
     };
   }
 
-  Lens<Source, Resolution> compoundLens<Through extends Source?, Resolution>(
+  Lens<Source, Resolution> compoundLens<Through extends Focus?, Resolution>(
     Lens<Through, Resolution> optic,
   ) {
     return Lens<Source, Resolution>(
@@ -53,7 +53,7 @@ class Iso<Source> extends Optical<Source, Source> {
 
         final updatedThrough = optic.setter(through, value);
 
-        if (updatedThrough is! Source) {
+        if (updatedThrough is! Focus) {
           return source;
         }
 
@@ -62,7 +62,7 @@ class Iso<Source> extends Optical<Source, Source> {
     );
   }
 
-  Prism<Source, Resolution?> compoundPrism<Through extends Source?, Resolution>(
+  Prism<Source, Resolution?> compoundPrism<Through extends Focus?, Resolution>(
     Prism<Through, Resolution?> optic,
   ) {
     return Prism<Source, Resolution?>(
@@ -84,7 +84,7 @@ class Iso<Source> extends Optical<Source, Source> {
 
         final updatedThrough = optic.setter(through, value);
 
-        if (updatedThrough is! Source) {
+        if (updatedThrough is! Focus) {
           return source;
         }
 
@@ -94,16 +94,17 @@ class Iso<Source> extends Optical<Source, Source> {
   }
 }
 
-final class _Iso<Source> extends Iso<Source> {
+final class _Iso<Source, Focus> extends Iso<Source, Focus> {
   const _Iso() : super(getter: _identity, setter: _identitySetter);
 }
 
-Source _identity<Source>(Source source) => source;
-Source _identitySetter<Source>(Source source, Source value) => value;
+Focus _identity<Source, Focus>(Source source) => source as Focus;
+Source _identitySetter<Source, Focus>(Source source, Focus value) =>
+    value as Source;
 
 extension ObjectIso<Source> on Source {
-  Iso<Source> asIso() {
-    return Iso<Source>(
+  Iso<Source, Source> asIso() {
+    return Iso<Source, Source>(
       getter: (source) => this,
       setter: (source, value) => value,
     );
