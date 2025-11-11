@@ -1,4 +1,25 @@
-## 0.1.0
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## 2025-11-11
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`optics` - `v0.1.0`](#optics---v010)
+
+---
+
+#### `optics` - `v0.1.0`
 
  - **REFACTOR**: collapse get/set unto optical.
  - **REFACTOR**: split iso types.
@@ -17,6 +38,3 @@
  - **FEAT**: Lenses.
  - **DOCS**: Add class docs.
 
-## 0.0.1
-
-- Initial version.
