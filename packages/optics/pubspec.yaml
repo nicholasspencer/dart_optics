@@ -1,7 +1,7 @@
 name: optics
 description: >
   Lenses and prisms for Dart objects.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/nicholasspencer/dart_optics/tree/main/packages/optics
 issue_tracker: https://github.com/nicholasspencer/dart-optics/issues
 

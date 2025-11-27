@@ -1,3 +1,10 @@
+## 0.2.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: iso conversion (#1).
+ - **BREAKING** **REFACTOR**: Improved readability for iso constructors.
+
 ## 0.1.0
 
  - **REFACTOR**: collapse get/set unto optical.
