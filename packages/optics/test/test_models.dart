@@ -13,6 +13,15 @@ abstract class ApiPerson with _$ApiPerson {
 }
 
 @freezed
+abstract class DomainPerson with _$DomainPerson {
+  const factory DomainPerson({
+    required String name,
+    required Address address,
+    Job? job,
+  }) = _DomainPerson;
+}
+
+@freezed
 abstract class Address with _$Address {
   const factory Address({required String streetName, String? buildingName}) =
       _Address;
