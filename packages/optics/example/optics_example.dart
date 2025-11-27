@@ -3,7 +3,7 @@ import 'package:optics/optics.dart';
 import '../test/test_models.dart';
 
 void main() {
-  Person person = Person(
+  ApiPerson person = ApiPerson(
     name: 'Joe',
     address: Address(streetName: '123 Capital of Texas Hwy'),
   );

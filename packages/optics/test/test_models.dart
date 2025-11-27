@@ -4,12 +4,12 @@ import 'package:optics/optics.dart';
 part 'test_models.freezed.dart';
 
 @freezed
-abstract class Person with _$Person {
-  const factory Person({
+abstract class ApiPerson with _$ApiPerson {
+  const factory ApiPerson({
     required String name,
     required Address address,
     Job? job,
-  }) = _Person;
+  }) = _ApiPerson;
 }
 
 @freezed
@@ -23,17 +23,17 @@ abstract class Job with _$Job {
   const factory Job({required Address address, required String title}) = _Job;
 }
 
-extension PersonOptics on Person {
-  static final Lens<Person, Address> address = Lens(
+extension PersonOptics on ApiPerson {
+  static final Lens<ApiPerson, Address> address = Lens(
     getter: (subject) => subject.address,
     setter: (subject, value) => subject.copyWith(address: value),
   );
 
-  static final Lens<Person, String> addressName = address.compound(
+  static final Lens<ApiPerson, String> addressName = address.compound(
     AddressOptics.streetName,
   );
 
-  static final Prism<Person, Job?> job = Prism(
+  static final Prism<ApiPerson, Job?> job = Prism(
     getter: (subject) => subject.job,
     setter: (subject, value) => subject.copyWith(job: value),
   );
@@ -45,10 +45,10 @@ extension PersonOptics on Person {
     through: AddressOptics.streetName,
   );
 
-  SourceBinding<Person, Address> get addressOptic =>
+  SourceBinding<ApiPerson, Address> get addressOptic =>
       SourceBinding(source: this, optic: address);
 
-  Prism<Person, Job?> get jobOptic => asIso().compoundPrism(job);
+  Prism<ApiPerson, Job?> get jobOptic => asIso().compoundPrism(job);
 
   static final worksInBuildingName = AffineTraversal(
     source: AffineTraversal(source: job, through: JobOptics.address),
@@ -162,8 +162,8 @@ final catName = Lens<Cat, String>(
 );
 
 // Helper extension for binding tests
-extension SourceBindingHelpers on Person {
-  SourceBinding<Person, Job?> get jobBinding =>
+extension SourceBindingHelpers on ApiPerson {
+  SourceBinding<ApiPerson, Job?> get jobBinding =>
       SourceBinding(source: this, optic: PersonOptics.job);
 }
 

@@ -6,9 +6,9 @@ import 'test_models.dart';
 void main() {
   group('Iso', () {
     test('Iso.identity get/set', () {
-      const identity = Iso<Person, Person>.identity();
+      const identity = Iso<ApiPerson, ApiPerson>.identity();
 
-      final p = Person(
+      final p = ApiPerson(
         name: 'A',
         address: Address(streetName: 'X'),
       );
@@ -20,10 +20,10 @@ void main() {
     });
 
     test('Iso.compound with Lens returns a Lens and works', () {
-      const identity = Iso<Person, Person>.identity();
+      const identity = Iso<ApiPerson, ApiPerson>.identity();
       final lens = identity.compoundLens(PersonOptics.address);
 
-      final p = Person(
+      final p = ApiPerson(
         name: 'A',
         address: Address(streetName: 'X'),
       );
@@ -35,10 +35,10 @@ void main() {
     });
 
     test('Iso.compound with Prism returns a Prism and works', () {
-      const identity = Iso<Person, Person>.identity();
+      const identity = Iso<ApiPerson, ApiPerson>.identity();
       final prism = identity.compoundPrism(PersonOptics.job);
 
-      var p = Person(
+      var p = ApiPerson(
         name: 'A',
         address: Address(streetName: 'X'),
         job: Job(
@@ -55,12 +55,12 @@ void main() {
     });
 
     test('Iso compound with different optic types', () {
-      const identity = Iso<Person, Person>.identity();
+      const identity = Iso<ApiPerson, ApiPerson>.identity();
 
       // Test compound with a simple lens
       final addressLens = identity.compoundLens(PersonOptics.address);
 
-      final p = Person(
+      final p = ApiPerson(
         name: 'John',
         address: Address(streetName: 'Main St'),
       );
@@ -72,7 +72,7 @@ void main() {
     });
 
     test('ObjectIso extension asIso', () {
-      final person = Person(
+      final person = ApiPerson(
         name: 'John',
         address: Address(streetName: 'Main St'),
       );
@@ -86,7 +86,7 @@ void main() {
     });
 
     test('Instance jobOptic using asIso compound', () {
-      final person = Person(
+      final person = ApiPerson(
         name: 'John',
         address: Address(streetName: 'Main St'),
         job: Job(

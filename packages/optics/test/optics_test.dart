@@ -3,10 +3,10 @@ import 'package:test/test.dart';
 import 'test_models.dart';
 
 void main() {
-  late Person subject;
+  late ApiPerson subject;
 
   setUp(() {
-    subject = Person(
+    subject = ApiPerson(
       name: 'John',
       address: Address(streetName: '123 Capital of Texas Hwy'),
       job: Job(

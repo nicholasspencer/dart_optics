@@ -12,20 +12,20 @@ part of 'test_models.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$Person {
+mixin _$ApiPerson {
 
  String get name; Address get address; Job? get job;
-/// Create a copy of Person
+/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$PersonCopyWith<Person> get copyWith => _$PersonCopyWithImpl<Person>(this as Person, _$identity);
+$ApiPersonCopyWith<ApiPerson> get copyWith => _$ApiPersonCopyWithImpl<ApiPerson>(this as ApiPerson, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Person&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address)&&(identical(other.job, job) || other.job == job));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApiPerson&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address)&&(identical(other.job, job) || other.job == job));
 }
 
 
@@ -34,15 +34,15 @@ int get hashCode => Object.hash(runtimeType,name,address,job);
 
 @override
 String toString() {
-  return 'Person(name: $name, address: $address, job: $job)';
+  return 'ApiPerson(name: $name, address: $address, job: $job)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $PersonCopyWith<$Res>  {
-  factory $PersonCopyWith(Person value, $Res Function(Person) _then) = _$PersonCopyWithImpl;
+abstract mixin class $ApiPersonCopyWith<$Res>  {
+  factory $ApiPersonCopyWith(ApiPerson value, $Res Function(ApiPerson) _then) = _$ApiPersonCopyWithImpl;
 @useResult
 $Res call({
  String name, Address address, Job? job
@@ -53,14 +53,14 @@ $AddressCopyWith<$Res> get address;$JobCopyWith<$Res>? get job;
 
 }
 /// @nodoc
-class _$PersonCopyWithImpl<$Res>
-    implements $PersonCopyWith<$Res> {
-  _$PersonCopyWithImpl(this._self, this._then);
+class _$ApiPersonCopyWithImpl<$Res>
+    implements $ApiPersonCopyWith<$Res> {
+  _$ApiPersonCopyWithImpl(this._self, this._then);
 
-  final Person _self;
-  final $Res Function(Person) _then;
+  final ApiPerson _self;
+  final $Res Function(ApiPerson) _then;
 
-/// Create a copy of Person
+/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? address = null,Object? job = freezed,}) {
   return _then(_self.copyWith(
@@ -70,7 +70,7 @@ as Address,job: freezed == job ? _self.job : job // ignore: cast_nullable_to_non
 as Job?,
   ));
 }
-/// Create a copy of Person
+/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -79,7 +79,7 @@ $AddressCopyWith<$Res> get address {
   return $AddressCopyWith<$Res>(_self.address, (value) {
     return _then(_self.copyWith(address: value));
   });
-}/// Create a copy of Person
+}/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -95,8 +95,8 @@ $JobCopyWith<$Res>? get job {
 }
 
 
-/// Adds pattern-matching-related methods to [Person].
-extension PersonPatterns on Person {
+/// Adds pattern-matching-related methods to [ApiPerson].
+extension ApiPersonPatterns on ApiPerson {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -109,10 +109,10 @@ extension PersonPatterns on Person {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Person value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ApiPerson value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Person() when $default != null:
+case _ApiPerson() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -131,10 +131,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Person value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ApiPerson value)  $default,){
 final _that = this;
 switch (_that) {
-case _Person():
+case _ApiPerson():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -152,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Person value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ApiPerson value)?  $default,){
 final _that = this;
 switch (_that) {
-case _Person() when $default != null:
+case _ApiPerson() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -175,7 +175,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  Address address,  Job? job)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Person() when $default != null:
+case _ApiPerson() when $default != null:
 return $default(_that.name,_that.address,_that.job);case _:
   return orElse();
 
@@ -196,7 +196,7 @@ return $default(_that.name,_that.address,_that.job);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  Address address,  Job? job)  $default,) {final _that = this;
 switch (_that) {
-case _Person():
+case _ApiPerson():
 return $default(_that.name,_that.address,_that.job);case _:
   throw StateError('Unexpected subclass');
 
@@ -216,7 +216,7 @@ return $default(_that.name,_that.address,_that.job);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  Address address,  Job? job)?  $default,) {final _that = this;
 switch (_that) {
-case _Person() when $default != null:
+case _ApiPerson() when $default != null:
 return $default(_that.name,_that.address,_that.job);case _:
   return null;
 
@@ -228,25 +228,25 @@ return $default(_that.name,_that.address,_that.job);case _:
 /// @nodoc
 
 
-class _Person implements Person {
-  const _Person({required this.name, required this.address, this.job});
+class _ApiPerson implements ApiPerson {
+  const _ApiPerson({required this.name, required this.address, this.job});
   
 
 @override final  String name;
 @override final  Address address;
 @override final  Job? job;
 
-/// Create a copy of Person
+/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$PersonCopyWith<_Person> get copyWith => __$PersonCopyWithImpl<_Person>(this, _$identity);
+_$ApiPersonCopyWith<_ApiPerson> get copyWith => __$ApiPersonCopyWithImpl<_ApiPerson>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Person&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address)&&(identical(other.job, job) || other.job == job));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ApiPerson&&(identical(other.name, name) || other.name == name)&&(identical(other.address, address) || other.address == address)&&(identical(other.job, job) || other.job == job));
 }
 
 
@@ -255,15 +255,15 @@ int get hashCode => Object.hash(runtimeType,name,address,job);
 
 @override
 String toString() {
-  return 'Person(name: $name, address: $address, job: $job)';
+  return 'ApiPerson(name: $name, address: $address, job: $job)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$PersonCopyWith<$Res> implements $PersonCopyWith<$Res> {
-  factory _$PersonCopyWith(_Person value, $Res Function(_Person) _then) = __$PersonCopyWithImpl;
+abstract mixin class _$ApiPersonCopyWith<$Res> implements $ApiPersonCopyWith<$Res> {
+  factory _$ApiPersonCopyWith(_ApiPerson value, $Res Function(_ApiPerson) _then) = __$ApiPersonCopyWithImpl;
 @override @useResult
 $Res call({
  String name, Address address, Job? job
@@ -274,17 +274,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$PersonCopyWithImpl<$Res>
-    implements _$PersonCopyWith<$Res> {
-  __$PersonCopyWithImpl(this._self, this._then);
+class __$ApiPersonCopyWithImpl<$Res>
+    implements _$ApiPersonCopyWith<$Res> {
+  __$ApiPersonCopyWithImpl(this._self, this._then);
 
-  final _Person _self;
-  final $Res Function(_Person) _then;
+  final _ApiPerson _self;
+  final $Res Function(_ApiPerson) _then;
 
-/// Create a copy of Person
+/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? address = null,Object? job = freezed,}) {
-  return _then(_Person(
+  return _then(_ApiPerson(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as Address,job: freezed == job ? _self.job : job // ignore: cast_nullable_to_non_nullable
@@ -292,7 +292,7 @@ as Job?,
   ));
 }
 
-/// Create a copy of Person
+/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
@@ -301,7 +301,7 @@ $AddressCopyWith<$Res> get address {
   return $AddressCopyWith<$Res>(_self.address, (value) {
     return _then(_self.copyWith(address: value));
   });
-}/// Create a copy of Person
+}/// Create a copy of ApiPerson
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')

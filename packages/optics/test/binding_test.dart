@@ -6,7 +6,7 @@ import 'test_models.dart';
 void main() {
   group('SourceBinding', () {
     test('call and set for Lens binding', () {
-      final p = Person(
+      final p = ApiPerson(
         name: 'John',
         address: Address(streetName: 'A'),
       );
@@ -19,7 +19,7 @@ void main() {
     });
 
     test('compound through Lens -> nullable Resolution', () {
-      final p = Person(
+      final p = ApiPerson(
         name: 'John',
         address: Address(streetName: 'A'),
       );
@@ -41,7 +41,7 @@ void main() {
     });
 
     test('compound Prism -> Lens (title), get and set', () {
-      var p = Person(
+      var p = ApiPerson(
         name: 'John',
         address: Address(streetName: 'A'),
         job: Job(
@@ -72,7 +72,7 @@ void main() {
     });
 
     test('instance addressOptic works', () {
-      final person = Person(
+      final person = ApiPerson(
         name: 'John',
         address: Address(streetName: 'Main St'),
       );
@@ -85,7 +85,7 @@ void main() {
     });
 
     test('instance jobOptic works', () {
-      final person = Person(
+      final person = ApiPerson(
         name: 'John',
         address: Address(streetName: 'Main St'),
         job: Job(
@@ -131,7 +131,7 @@ void main() {
     });
 
     test('compound binding with nullable final focus', () {
-      final person = Person(
+      final person = ApiPerson(
         name: 'John',
         address: Address(streetName: 'Main St'),
         job: Job(
@@ -156,7 +156,7 @@ void main() {
     });
 
     test('compound binding chains preserve source immutability', () {
-      final originalPerson = Person(
+      final originalPerson = ApiPerson(
         name: 'John',
         address: Address(streetName: 'Main St'),
         job: Job(
@@ -180,12 +180,12 @@ void main() {
     });
 
     test('bind creates new binding with different source', () {
-      final person1 = Person(
+      final person1 = ApiPerson(
         name: 'Alice',
         address: Address(streetName: 'First St'),
       );
 
-      final person2 = Person(
+      final person2 = ApiPerson(
         name: 'Bob',
         address: Address(streetName: 'Second St'),
       );
@@ -224,12 +224,12 @@ void main() {
     });
 
     test('bind with compound binding preserves compound behavior', () {
-      final person1 = Person(
+      final person1 = ApiPerson(
         name: 'Alice',
         address: Address(streetName: 'First St'),
       );
 
-      final person2 = Person(
+      final person2 = ApiPerson(
         name: 'Bob',
         address: Address(streetName: 'Second St'),
       );
