@@ -3,10 +3,10 @@ import 'package:test/test.dart';
 import 'test_models.dart';
 
 void main() {
-  late Person subject;
+  late ApiPerson subject;
 
   setUp(() {
-    subject = Person(
+    subject = ApiPerson(
       name: 'John',
       address: Address(streetName: '123 Capital of Texas Hwy'),
       job: Job(
@@ -107,7 +107,7 @@ void main() {
       expect(newSubject.job?.title, 'Senior Developer');
 
       // Test with null job
-      final personWithoutJob = Person(
+      final personWithoutJob = ApiPerson(
         name: 'Jane',
         address: Address(streetName: 'Main St'),
         job: null,
@@ -121,7 +121,7 @@ void main() {
     });
 
     test('Null propagation when source Focus is absent', () {
-      final personWithoutJob = Person(
+      final personWithoutJob = ApiPerson(
         name: 'John',
         address: Address(streetName: '123'),
         job: null,
