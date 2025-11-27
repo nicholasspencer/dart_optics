@@ -37,12 +37,12 @@ part of 'optical.dart';
 /// final personIso = Iso<Person, Person>.identity();
 /// ```
 class Iso<Source, Focus> extends Optical<Source, Focus> {
-  /// Creates an isomorphism with the given [getter] and [setter] functions.
+  /// Creates an isomorphism with the given [to] and [from] functions.
   ///
-  /// The [getter] converts from [Source] to [Focus], and the [setter]
+  /// The [to] converts from [Source] to [Focus], and the [from]
   /// converts from [Focus] back to [Source]. These should be inverse
   /// operations for a true isomorphism.
-  const Iso({required this.getter, required this.setter});
+  const Iso({required this.to, required this.from});
 
   /// Creates an identity isomorphism where [Source] and [Focus] are the same.
   ///
@@ -50,11 +50,15 @@ class Iso<Source, Focus> extends Optical<Source, Focus> {
   /// This is useful as a starting point for optic composition.
   const factory Iso.identity() = _Iso<Source, Focus>;
 
-  @override
-  final Accessor<Source, Focus> getter;
+  final Accessor<Source, Focus> to;
+
+  final Mutator<Source, Focus> from;
 
   @override
-  final Mutator<Source, Focus> setter;
+  Accessor<Source, Focus> get getter => to;
+
+  @override
+  Mutator<Source, Focus> get setter => from;
 
   /// Composes this iso with another optic, preserving optic strength.
   ///
@@ -161,7 +165,7 @@ class Iso<Source, Focus> extends Optical<Source, Focus> {
 
 /// Private implementation of identity iso.
 final class _Iso<Source, Focus> extends Iso<Source, Focus> {
-  const _Iso() : super(getter: _identity, setter: _identitySetter);
+  const _Iso() : super(to: _identity, from: _identitySetter);
 }
 
 Focus _identity<Source, Focus>(Source source) => source as Focus;
@@ -188,8 +192,8 @@ extension ObjectIso<Source> on Source {
   /// ```
   Iso<Source, Source> asIso() {
     return Iso<Source, Source>(
-      getter: (source) => this,
-      setter: (source, value) => value,
+      to: (source) => this,
+      from: (source, value) => value,
     );
   }
 }

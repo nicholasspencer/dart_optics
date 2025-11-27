@@ -7,7 +7,7 @@ void main() {
   group('Iso', () {
     test('to', () {
       final apiToDomain = Iso<ApiPerson, DomainPerson>(
-        getter: (source) => DomainPerson(
+        to: (source) => DomainPerson(
           name: source.name,
           address: Address(
             streetName: source.address.streetName,
@@ -23,7 +23,7 @@ void main() {
                   title: source.job!.title,
                 ),
         ),
-        setter: (source, value) => ApiPerson(
+        from: (source, value) => ApiPerson(
           name: value.name,
           address: Address(
             streetName: value.address.streetName,
@@ -69,7 +69,7 @@ void main() {
 
     test('from', () {
       final domainToApi = Iso<DomainPerson, ApiPerson>(
-        getter: (source) => ApiPerson(
+        to: (source) => ApiPerson(
           name: source.name,
           address: Address(
             streetName: source.address.streetName,
@@ -85,7 +85,7 @@ void main() {
                   title: source.job!.title,
                 ),
         ),
-        setter: (source, value) => DomainPerson(
+        from: (source, value) => DomainPerson(
           name: value.name,
           address: Address(
             streetName: value.address.streetName,
@@ -252,7 +252,7 @@ void main() {
   group('Iso laws', () {
     test('apiToDomain Iso left/right inverse laws', () {
       final apiToDomain = Iso<ApiPerson, DomainPerson>(
-        getter: (source) => DomainPerson(
+        to: (source) => DomainPerson(
           name: source.name,
           address: Address(
             streetName: source.address.streetName,
@@ -268,7 +268,7 @@ void main() {
                   title: source.job!.title,
                 ),
         ),
-        setter: (source, value) => ApiPerson(
+        from: (source, value) => ApiPerson(
           name: value.name,
           address: Address(
             streetName: value.address.streetName,
@@ -318,7 +318,7 @@ void main() {
 
     test('domainToApi Iso left/right inverse laws', () {
       final domainToApi = Iso<DomainPerson, ApiPerson>(
-        getter: (source) => ApiPerson(
+        to: (source) => ApiPerson(
           name: source.name,
           address: Address(
             streetName: source.address.streetName,
@@ -334,7 +334,7 @@ void main() {
                   title: source.job!.title,
                 ),
         ),
-        setter: (source, value) => DomainPerson(
+        from: (source, value) => DomainPerson(
           name: value.name,
           address: Address(
             streetName: value.address.streetName,
@@ -384,7 +384,7 @@ void main() {
 
     test('apiToDomain and domainToApi composition behaves like identity', () {
       final apiToDomain = Iso<ApiPerson, DomainPerson>(
-        getter: (source) => DomainPerson(
+        to: (source) => DomainPerson(
           name: source.name,
           address: Address(
             streetName: source.address.streetName,
@@ -400,7 +400,7 @@ void main() {
                   title: source.job!.title,
                 ),
         ),
-        setter: (source, value) => ApiPerson(
+        from: (source, value) => ApiPerson(
           name: value.name,
           address: Address(
             streetName: value.address.streetName,
@@ -419,7 +419,7 @@ void main() {
       );
 
       final domainToApi = Iso<DomainPerson, ApiPerson>(
-        getter: (source) => ApiPerson(
+        to: (source) => ApiPerson(
           name: source.name,
           address: Address(
             streetName: source.address.streetName,
@@ -435,7 +435,7 @@ void main() {
                   title: source.job!.title,
                 ),
         ),
-        setter: (source, value) => DomainPerson(
+        from: (source, value) => DomainPerson(
           name: value.name,
           address: Address(
             streetName: value.address.streetName,

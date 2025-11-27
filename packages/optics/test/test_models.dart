@@ -177,6 +177,6 @@ extension SourceBindingHelpers on ApiPerson {
 }
 
 final utf8Iso = Iso<String, List<int>>(
-  getter: (s) => s.codeUnits,
-  setter: (s, bytes) => String.fromCharCodes(bytes),
+  to: (s) => s.codeUnits,
+  from: (s, bytes) => String.fromCharCodes(bytes),
 );
